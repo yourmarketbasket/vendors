@@ -34,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final String feedback = "";
 
     return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
         title: Row(
           children: [
