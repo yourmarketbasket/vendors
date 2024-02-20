@@ -61,18 +61,36 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Text(feedback),
               TextField(
+                
+                style: TextStyle(color: Colors.white),
                 controller: _username,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  hoverColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white)
+                  ),
                   labelText: "Phone Number",
                   prefixIcon: Icon(Icons.dialpad_rounded),
+                  focusColor: Colors.white,
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white)
+                  ),
+                            
                 ),
+                
               ),
               SizedBox(height: 20),
               TextField(
                 controller: _password,
                 obscureText: _obscureText,
+                style: TextStyle(color: Colors.white),
+                obscuringCharacter: "x",
                 decoration: InputDecoration(
+                  focusColor: Colors.white,
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white)
+                  ),
                   border: OutlineInputBorder(),
                   labelText: "Password",
                   prefixIcon: Icon(Icons.password_outlined),
