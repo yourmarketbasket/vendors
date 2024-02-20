@@ -206,7 +206,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               SizedBox(height: 20,),
-              Text("\u00A9"+DateTime.now().year.toString()+" All Rights Reserved", style: TextStyle(fontSize: 10),)
+              Text("Forgot Password?", style: TextStyle(fontSize: 10, color: Colors.white),),
+
+              SizedBox(height: 20,),
+              Text("\u00A9"+DateTime.now().year.toString()+" All Rights Reserved", style: TextStyle(fontSize: 10, color: Colors.white),)
 
 
 
