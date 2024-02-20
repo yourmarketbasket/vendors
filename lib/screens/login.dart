@@ -2,8 +2,11 @@ import 'dart:ui';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:nisoko_vendors/controllers/login-controller.dart';
 import 'package:nisoko_vendors/screens/landing.dart';
 import 'package:nisoko_vendors/utils/colors.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -13,14 +16,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late TextEditingController _username;
+  late TextEditingController _phone;
   late TextEditingController _password;
   bool _obscureText = true;
+  String feedback = "";
+
+  LoginController loginController = Get.put(LoginController());
 
   @override
   void initState() {
     super.initState();
-    _username = TextEditingController();
+    _phone = TextEditingController();
     _password = TextEditingController();
     doWhenWindowReady(() {
       var initialSize = Size(320, 500);
@@ -31,19 +37,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final String feedback = "";
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: Row(
-          children: [
-            Icon(Icons.lock_open_outlined, color: Colors.white),
-            Text(
-              "Login",
-              style: TextStyle(color: Colors.white),
+        title: WindowTitleBarBox(
+          child: MoveWindow(
+            child: Row(
+              children: [
+                Icon(Icons.lock_open_outlined, color: Colors.white),
+                Text(
+                  "Login",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
         backgroundColor: AppTheme.backgroundColor,
         actions: [
@@ -59,11 +68,25 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(feedback),
+              Obx(() => loginController.error.value ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.error_outline, color: AppTheme.dangerColor),
+                    Text(loginController.feedback.value, style: TextStyle(color: AppTheme.dangerColor),)
+                  ],
+                ): Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.check_circle_outline, color: AppTheme.mainColor),
+                    Text(loginController.feedback.value, style: TextStyle(color: AppTheme.mainColor),)
+                  ],
+                )
+              ),
+              SizedBox(height: 10,),
               TextField(
                 
                 style: TextStyle(color: Colors.white),
-                controller: _username,
+                controller: _phone,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hoverColor: Colors.white,
@@ -132,7 +155,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            Map<String, dynamic> data = {
+                              "phone":_phone.text,
+                              "password":_password.text
+                            };
+                            final Map<String, dynamic> response = await loginController.loginUser(context,data);
+                            
+                          },
                           style: ElevatedButton.styleFrom(
                             primary: AppTheme.mainColor,
                             elevation: 0, // Remove button elevation
@@ -243,7 +273,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _username.dispose();
+    _phone.dispose();
     _password.dispose();
     super.dispose();
   }

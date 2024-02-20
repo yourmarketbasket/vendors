@@ -3,6 +3,9 @@ import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:nisoko_vendors/controllers/landing-controller.dart';
 import 'package:nisoko_vendors/screens/login.dart';
 import 'package:nisoko_vendors/utils/colors.dart';
 import 'package:nisoko_vendors/utils/widgets.dart';
@@ -15,6 +18,7 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
+  LandingController landingController = Get.put(LandingController());
 
   @override
   void initState() {
@@ -25,6 +29,7 @@ class _LandingScreenState extends State<LandingScreen> {
       appWindow.size = initialSize;
       appWindow.minSize = initialSize;
     });
+    landingController.getUserDetails();
   }
   @override
   Widget build(BuildContext context) {
