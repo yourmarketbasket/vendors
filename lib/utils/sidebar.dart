@@ -12,6 +12,7 @@ class _SidebarState extends State<Sidebar> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      width: 200,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.zero
       ),
