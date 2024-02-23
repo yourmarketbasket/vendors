@@ -5,8 +5,9 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:nisoko_vendors/controllers/landing-controller.dart';
 import 'package:nisoko_vendors/utils/colors.dart';
+import 'package:nisoko_vendors/utils/functions.dart';
 
-SizedBox sideBar(){
+SizedBox sideBar(BuildContext context){
   LandingController landingController = Get.put(LandingController());
   return SizedBox(
     width: 200,
@@ -101,7 +102,9 @@ SizedBox sideBar(){
                 Container(
                   width: 150,
                   child: ElevatedButton(
-                    onPressed: (){}, 
+                    onPressed: (){
+                      logout(context);
+                    }, 
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

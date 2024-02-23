@@ -8,7 +8,7 @@ class AppTheme{
 
    static WindowButtonColors windowButtonColors = WindowButtonColors(
     iconNormal: Colors.white,
-    mouseOver: Color.fromARGB(255, 14, 8, 90),
+    mouseOver: Color.fromARGB(255, 4, 1, 43),
     mouseDown: Colors.amber,
     iconMouseOver: Colors.white,
 

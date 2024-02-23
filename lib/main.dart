@@ -1,3 +1,4 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:nisoko_vendors/screens/landing.dart';
@@ -5,6 +6,11 @@ import 'package:nisoko_vendors/screens/login.dart';
 
 void main() {
   runApp(const EntryPage());
+  doWhenWindowReady(() {
+      var initialSize = Size(320, 500);
+      appWindow.size = initialSize;
+      appWindow.maxSize = initialSize;
+    });
 }
 
 class EntryPage extends StatelessWidget {
@@ -13,7 +19,7 @@ class EntryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Nisoko Vendors',
       theme: ThemeData(
         // Your theme data
       ),

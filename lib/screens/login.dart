@@ -23,17 +23,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
   LoginController loginController = Get.put(LoginController());
 
-  @override
-  void initState() {
-    super.initState();
-    _phone = TextEditingController();
-    _password = TextEditingController();
-    doWhenWindowReady(() {
-      var initialSize = Size(320, 500);
-      appWindow.size = initialSize;
-      appWindow.maxSize = initialSize;
-    });
-  }
+ @override
+void initState() {
+  super.initState();
+  
+  doWhenWindowReady(() {
+    var initialSize = Size(320, 500);
+    appWindow.size = initialSize;
+    appWindow.maxSize = initialSize;
+  });
+  _phone = TextEditingController();
+  _password = TextEditingController();
+}
+
+
 
   @override
   Widget build(BuildContext context) {
