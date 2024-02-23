@@ -26,6 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
  @override
 void initState() {
   super.initState();
+  feedback="";
+  loginController.error.value=false;
   
   doWhenWindowReady(() {
     var initialSize = Size(320, 500);
@@ -34,6 +36,8 @@ void initState() {
   _phone = TextEditingController();
   _password = TextEditingController();
 }
+
+
 
 
 
@@ -70,19 +74,22 @@ void initState() {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Obx(() => loginController.error.value ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.error_outline, color: AppTheme.dangerColor),
-                    Text(loginController.feedback.value, style: TextStyle(color: AppTheme.dangerColor),)
-                  ],
-                ): Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.check_circle_outline, color: AppTheme.mainColor),
-                    Text(loginController.feedback.value, style: TextStyle(color: AppTheme.mainColor),)
-                  ],
-                )
+              Obx(() => Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    loginController.error.value ? Icons.error_outline : Icons.check_circle_outline,
+                    color: loginController.error.value ? AppTheme.dangerColor : AppTheme.mainColor,
+                  ),
+                  Text(
+                    loginController.feedback.value,
+                    style: TextStyle(
+                      color: loginController.error.value  ? AppTheme.dangerColor : AppTheme.mainColor,
+                    ),
+                  ),
+                ],
+              )
+
               ),
               SizedBox(height: 10,),
               TextField(
