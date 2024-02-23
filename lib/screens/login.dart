@@ -30,7 +30,6 @@ void initState() {
   doWhenWindowReady(() {
     var initialSize = Size(320, 500);
     appWindow.size = initialSize;
-    appWindow.maxSize = initialSize;
   });
   _phone = TextEditingController();
   _password = TextEditingController();

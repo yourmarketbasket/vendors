@@ -50,35 +50,49 @@ class _LandingScreenState extends State<LandingScreen> {
         children: [
           // the draggable title bar
           WindowTitleBarBox(
-            child: MoveWindow(
-              child: Container(
-                padding: EdgeInsets.all(5),
-                width: w,
-                height: 100,
-                color: Color.fromARGB(255, 0, 0, 19),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    TextButton(
-                      onPressed: (){
-                            _scaffoldKey.currentState?.openDrawer();
-
-                      }, 
-                      child: Icon(Icons.menu, color: Colors.white,)
-                    ),
-                    Text("Nisoko Vendors v.1.1.0", style: TextStyle(color: Colors.white),),
-                    Row(
-                      children: [
-                        MinimizeWindowButton(),
-                        MaximizeWindowButton(),
-                        CloseWindowButton()
-                      ],
-                    )
-
-                                      
-                  ],
-                ),
+            child: Container(
+              padding: EdgeInsets.all(5),
+              width: w,
+              height: 100,
+              color: Color.fromARGB(255, 0, 0, 19),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: (){
+                          _scaffoldKey.currentState?.openDrawer();
+            
+                    }, 
+                    child: Icon(Icons.menu, color: Colors.white,)
+                  ),
+                  Expanded(child: MoveWindow(child: Text("Nisoko Vendors v.1.1.0", style: TextStyle(color: Colors.white),))),
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: (){
+                          appWindow.minimize();
+                        }, 
+                        icon: Icon(Icons.circle, color: Colors.amber, size: 15,)
+                      ),
+                      
+                      IconButton(
+                        onPressed: (){
+                          appWindow.maximizeOrRestore();
+                        }, 
+                        icon: Icon(Icons.circle, color: AppTheme.mainColor, size: 15)
+                      ),
+                      IconButton(
+                        onPressed: (){
+                          appWindow.close();
+                        }, 
+                        icon: Icon(Icons.circle, color: Colors.red, size: 15)
+                      ),
+                    ],
+                  )
+            
+                                    
+                ],
               ),
             ),
           ),
