@@ -2,6 +2,10 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nisoko_vendors/controllers/landing-controller.dart';
+import 'package:nisoko_vendors/screens/account.dart';
+import 'package:nisoko_vendors/screens/notifications.dart';
+import 'package:nisoko_vendors/screens/stores.dart';
+import 'package:nisoko_vendors/screens/support.dart';
 import 'package:nisoko_vendors/utils/colors.dart';
 import 'package:nisoko_vendors/utils/sidebar.dart';
 import 'package:nisoko_vendors/utils/widgets.dart';
@@ -21,9 +25,8 @@ class _LandingScreenState extends State<LandingScreen> {
   void initState() {
     super.initState();
     doWhenWindowReady(() {
-      var initialSize = Size(1200, 650);
-      appWindow.size = initialSize;
-      appWindow.minSize = initialSize;
+      appWindow.size = Size(1250, 650);
+      
     });
     landingController.getUserDetails();
     openDrawer();
@@ -43,10 +46,12 @@ class _LandingScreenState extends State<LandingScreen> {
    final h = MediaQuery.of(context).size.height;
    final w = MediaQuery.of(context).size.width;
 
+   String _currentPage = landingController.currentPage.value; 
+
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: AppTheme.backgroundColor,
-      body: Row(
+      body: Column(
         children: [
           // the draggable title bar
           WindowTitleBarBox(
@@ -54,7 +59,7 @@ class _LandingScreenState extends State<LandingScreen> {
               padding: EdgeInsets.all(5),
               width: w,
               height: 100,
-              color: Color.fromARGB(255, 0, 0, 19),
+              color: Color.fromARGB(255, 2, 2, 54),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -96,7 +101,19 @@ class _LandingScreenState extends State<LandingScreen> {
               ),
             ),
           ),
-          
+          Obx(() {
+            if(landingController.currentPage.value == "AccountScreen"){
+                return AccountScreen();
+            } else if(landingController.currentPage.value=="StoresScreen"){
+              return StoresScreen();
+            } else if(landingController.currentPage.value=="NotificationsScreen"){
+              return NotificationsScreen();
+            } else if(landingController.currentPage.value=="SupportScreen"){
+              return SupportScreen();
+            }else{
+              return AccountScreen();
+            }
+          }),
         ]
       ),
       drawer: Sidebar(),

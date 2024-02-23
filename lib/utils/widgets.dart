@@ -134,6 +134,22 @@ SizedBox sideBar(BuildContext context){
   );
 }
 
+Widget getPage(String page) {
+    switch (page) {
+      case 'Account':
+        return Text('account Page', style: TextStyle(color: Colors.white),);
+      case 'Stores':
+        return Text('stores', style: TextStyle(color: Colors.white),);
+      case 'Notifications':
+        return Text('Notifications', style: TextStyle(color: Colors.white),);
+      case 'Notifications':
+        return Text('Notifications', style: TextStyle(color: Colors.white),);
+      // Add more cases for additional pages
+      default:
+        return Text('Invalid Page', style: TextStyle(color: Colors.white),);
+    }
+  }
+
 
 mainWindow(){
   return Container(

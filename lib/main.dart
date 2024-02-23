@@ -6,11 +6,6 @@ import 'package:nisoko_vendors/screens/login.dart';
 
 void main() {
   runApp(const EntryPage());
-  doWhenWindowReady(() {
-      var initialSize = Size(320, 500);
-      appWindow.size = initialSize;
-      appWindow.maxSize = initialSize;
-    });
 }
 
 class EntryPage extends StatelessWidget {

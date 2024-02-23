@@ -9,6 +9,7 @@ class LandingController {
   RxString userId = "".obs;
   RxString feedback = "".obs;
   RxBool error = false.obs;
+  RxString currentPage = "".obs;
 
 RxMap<String, dynamic> userdetails = Map<String, dynamic>().obs;
 
