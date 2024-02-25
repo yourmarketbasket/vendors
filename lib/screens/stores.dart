@@ -60,28 +60,45 @@ class _StoresScreenState extends State<StoresScreen> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Row(
+                    children: [
+                      Icon(Icons.business_center,color: Colors.white),
+                      Text("Registered Stores", style: TextStyle(color: Colors.white),),
+                    ],
+                  ),
                   Container(
-                    height: 200,
-                    width: 300,
+                    height: 400,
+                    width: 350,
                     child: ListView.builder(
+                      padding: EdgeInsets.all(8),
                       controller: _scrollController,
                       itemCount: storesController.Stores.value['data'].length,
                       itemBuilder: (context, index) {
-                        return CheckboxListTile(
-                          controlAffinity: ListTileControlAffinity.leading,
-                          title: Text(storesController.Stores.value['data'][index]['storename'].toUpperCase(), style: TextStyle(color: Colors.white, fontSize: 12),),
-                          value: _selectedItems.contains(storesController.Stores.value['data'][index]['storename']),
-                          onChanged: (bool? value) {
-                            setState(() {
-                              if (value != null) {
-                                if (value) {
-                                  _selectedItems.add(storesController.Stores.value['data'][index]['storename']);
-                                } else {
-                                  _selectedItems.remove(storesController.Stores.value['data'][index]['storename']);
+                        return Container(
+                          margin: EdgeInsets.all(2),
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: Colors.white),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: CheckboxListTile(
+                            activeColor: MaterialStateColor.resolveWith((states) => AppTheme.mainColor),
+                            tileColor: Color.fromARGB(255, 6, 3, 56),
+                            controlAffinity: ListTileControlAffinity.leading,
+                            subtitle:Text(storesController.Stores.value['data'][index]['storetype'].toUpperCase(), style: TextStyle(color: const Color.fromARGB(255, 116, 115, 115), fontSize: 10),), 
+                            title: Text(storesController.Stores.value['data'][index]['storename'].toUpperCase(), style: TextStyle(color: Colors.white, fontSize: 12),),
+                            value: _selectedItems.contains(storesController.Stores.value['data'][index]['storename']),
+                            onChanged: (bool? value) {
+                              setState(() {
+                                if (value != null) {
+                                  if (value) {
+                                    _selectedItems.add(storesController.Stores.value['data'][index]['storename']);
+                                  } else {
+                                    _selectedItems.remove(storesController.Stores.value['data'][index]['storename']);
+                                  }
                                 }
-                              }
-                            });
-                          },
+                              });
+                            },
+                          ),
                         );
                       },
                     ),

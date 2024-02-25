@@ -2,6 +2,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nisoko_vendors/controllers/landing-controller.dart';
+import 'package:nisoko_vendors/controllers/stores-controller.dart';
 import 'package:nisoko_vendors/screens/account.dart';
 import 'package:nisoko_vendors/screens/notifications.dart';
 import 'package:nisoko_vendors/screens/stores.dart';
@@ -20,6 +21,7 @@ class LandingScreen extends StatefulWidget {
 class _LandingScreenState extends State<LandingScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   LandingController landingController = Get.put(LandingController());
+  StoresController storesController = Get.put(StoresController());
 
   @override
   void initState() {
@@ -29,6 +31,8 @@ class _LandingScreenState extends State<LandingScreen> {
       
     });
     landingController.getUserDetails();
+    storesController.getStores();
+
     openDrawer();
   }
 

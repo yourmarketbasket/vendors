@@ -16,6 +16,11 @@ class EntryPage extends StatelessWidget {
     return MaterialApp(
       title: 'Nisoko Vendors',
       theme: ThemeData(
+        scrollbarTheme: ScrollbarThemeData(
+        thickness: MaterialStateProperty.all(2),
+        thumbColor: MaterialStateProperty.all(Colors.green), // Change thumb color
+        // You can also customize other properties such as thickness, radius, etc.
+      ),
         // Your theme data
       ),
       debugShowCheckedModeBanner: false,
