@@ -150,6 +150,33 @@ Widget getPage(String page) {
     }
   }
 
+Widget createShadowedContainer({
+  required double height,
+  required double width,
+  required Color color,
+  required Widget child,
+}) {
+  return Container(
+    height: height,
+    width: width,
+    decoration: BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+      boxShadow: [
+        BoxShadow(
+          color: color.withOpacity(0.5), // Adjust opacity as needed
+          spreadRadius: 8,
+          blurRadius: 7,
+          offset: Offset(0, 0), // changes position of shadow (right and bottom)
+        ),
+      ],
+    ),
+    child: Center(
+      child: child,
+    ),
+  );
+}
+
 
 mainWindow(){
   return Container(

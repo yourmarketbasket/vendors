@@ -111,7 +111,7 @@ class _LandingScreenState extends State<LandingScreen> {
             } else if(landingController.currentPage.value=="SupportScreen"){
               return SupportScreen();
             }else{
-              return AccountScreen();
+              return StoresScreen();
             }
           }),
         ]

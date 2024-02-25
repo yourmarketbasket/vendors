@@ -69,12 +69,12 @@ class _SidebarState extends State<Sidebar> {
               ),
             ),
           ),
-          _buildMenuItem('My Account', icon: Icons.person, onPressed: (){
-            landingController.currentPage.value = "AccountScreen";
-          }),
           _buildMenuItem('Stores', icon: Icons.store_mall_directory, onPressed: (){
             landingController.currentPage.value = "StoresScreen";
 
+          }),
+          _buildMenuItem('My Account', icon: Icons.person, onPressed: (){
+            landingController.currentPage.value = "AccountScreen";
           }),
           _buildMenuItem('Notifications', icon: Icons.notifications_active, onPressed: (){
             landingController.currentPage.value = "NotificationsScreen";

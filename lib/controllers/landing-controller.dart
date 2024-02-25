@@ -48,7 +48,6 @@ RxMap<String, dynamic> userdetails = Map<String, dynamic>().obs;
       // Parse the JSON response body
         Map<String, dynamic> responseJson = jsonDecode(response.body);
         userdetails.value = responseJson;
-        print(userdetails.value['data']['avatar']);
       } 
 
     }
