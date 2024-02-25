@@ -36,6 +36,12 @@ class _StoresScreenState extends State<StoresScreen> {
             ],
           ),
         ),
+        Row(
+          
+          children: [
+
+          ],
+        ),
 
         Padding(
           padding: const EdgeInsets.all(8.0),
