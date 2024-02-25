@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nisoko_vendors/screens/landing.dart';
+import 'package:nisoko_vendors/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,7 +37,7 @@ RxMap<String, dynamic> userdetails = Map<String, dynamic>().obs;
     if (userIdFromPrefs != null && userIdFromPrefs.isNotEmpty) {
       userId.value = userIdFromPrefs;
       // get the data from the database
-      final String url = 'http://localhost:3000/getUser/${userId.value}';
+      final String url = '${Constants.serverLink}/getUser/${userId.value}';
 
       // Simulate sending user data to a server and receiving a response
       http.Response response = await http.get(

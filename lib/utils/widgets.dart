@@ -177,6 +177,28 @@ Widget createShadowedContainer({
   );
 }
 
+Widget ButtonContainer({
+  required IconData icon,
+  required VoidCallback onPressed,
+}){
+  return Container(
+    margin: EdgeInsets.only(top: 2, bottom: 2,left: 1, right: 1),
+    padding: EdgeInsets.all(5),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(3),
+      color: Color.fromARGB(255, 11, 3, 59),
+    ),
+    child: InkWell(
+      onTap: onPressed, 
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white, size: 16,)
+        ],
+      )
+    ),
+  );
+}
+
 
 mainWindow(){
   return Container(
