@@ -24,7 +24,7 @@ class _SidebarState extends State<Sidebar> {
     super.initState();
     landingController.getUserDetails();
     if(storesController.selectedStore.value==null){
-      openDialog(context);
+      openSelectStoreDialog(context);
     }
   }
 

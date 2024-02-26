@@ -141,6 +141,14 @@ class _LandingScreenState extends State<LandingScreen> {
           ),
           SpeedDialChild(
             shape: CircleBorder(),
+            child: Icon(Icons.add_a_photo_outlined),
+            label: "Add Product",
+            onTap: (){
+              showProductAddDialog(context);
+            }
+          ),
+          SpeedDialChild(
+            shape: CircleBorder(),
             child: Icon(Icons.terminal),
             label: "POS",
           ),
@@ -149,7 +157,7 @@ class _LandingScreenState extends State<LandingScreen> {
             child: Icon(Icons.toggle_on_outlined),
             label: "Toggle Store",
             onTap: (){
-              openDialog(context);
+              openSelectStoreDialog(context);
             }
           ),
           SpeedDialChild(

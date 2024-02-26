@@ -5,9 +5,10 @@ import "package:get/get.dart";
 import "package:nisoko_vendors/utils/constants.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import 'package:http/http.dart' as http;
-class StoresController{
+class StoresController extends GetxController{
   RxMap<String, dynamic> Stores = Map<String, dynamic>().obs;
   RxString selectedStore = "".obs;
+  RxInt currentPage = 0.obs;
 
   void getStores() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();

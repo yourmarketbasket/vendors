@@ -203,7 +203,7 @@ Widget ButtonContainer({
   );
 }
 
-void openDialog(BuildContext context) async {
+void openSelectStoreDialog(BuildContext context) async {
   StoresController storesController = Get.put(StoresController());
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String selectedStoreJson = prefs.getString('selectedStore') ?? '';
@@ -211,9 +211,10 @@ void openDialog(BuildContext context) async {
   Map<String, dynamic> stores = storesController.Stores.value; // Replace with your list of stores
 
   showDialog(
-    context: context,
+    context: context,    
     builder: (BuildContext context) {
       return AlertDialog(
+        elevation: 10,
         backgroundColor: AppTheme.backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
@@ -254,6 +255,171 @@ void openDialog(BuildContext context) async {
   );
 }
 
+
+
+Future<void> showProductAddDialog(BuildContext context) async {
+  int currentPage = 0;
+
+  final PageController controller = PageController(initialPage: currentPage);
+  final StoresController storesController = Get.put(StoresController());
+
+  void goToNextPage() {
+    if (storesController.currentPage.value < 7) {
+      storesController.currentPage.value++;
+      controller.animateToPage(
+        storesController.currentPage.value,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void goToPreviousPage() {
+    if (storesController.currentPage.value > 0) {
+      storesController.currentPage.value--;
+      controller.animateToPage(
+        storesController.currentPage.value,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: EdgeInsets.zero,
+        actionsPadding: EdgeInsets.all(1),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5)
+        ),
+        content: Container(
+          padding: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppTheme.mainColor,
+                AppTheme.backgroundColor,
+              ]
+            )
+          ),
+          height: 400,
+          width: 500,
+          child: Stack(
+            children: [
+              Form(
+                child: PageView(
+                controller: controller,
+                onPageChanged: (int page) {
+                  storesController.currentPage.value = page;
+                },
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      TextFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(color: Colors.white, width: 1), // Specify the border color here
+                          ),
+                          labelText: "Product Name", 
+                          labelStyle: TextStyle(color: Colors.white),  
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(color: Colors.white, width: 1), // Specify the border color here
+                          ),
+                          labelText: "Brand", 
+                          focusColor: Colors.white,
+                          hoverColor: Colors.white,
+                          labelStyle: TextStyle(color: Colors.white),  
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(color: Colors.white, width: 1), // Specify the border color here
+                          ),
+                          labelText: "Category", 
+                          focusColor: Colors.white,
+                          hoverColor: Colors.white,
+                          labelStyle: TextStyle(color: Colors.white),  
+                        ),
+                      ),
+                      SizedBox(height: 10,),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(color: Colors.white, width: 1), // Specify the border color here
+                          ),
+                          labelText: "Subcategory", 
+                          focusColor: Colors.white,
+                          hoverColor: Colors.white,
+                          labelStyle: TextStyle(color: Colors.white),  
+                        ),
+                      )
+
+                    ],
+                  ),
+                  Center(child: Text("two"),),
+                  Center(child: Text("three"),),
+                  Center(child: Text("four"),),
+                  Center(child: Text("five"),),
+                  Center(child: Text("six"),),
+                  Center(child: Text("seven"),),
+                  Center(child: Text("eight"),),
+
+
+
+
+
+
+                ],
+                              ),
+        
+              ),
+        
+              Positioned(
+                top: 0,
+                right: 0,
+                child:  IconButton(
+                  icon: Icon(Icons.close_sharp),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                )
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          Obx(() => storesController.currentPage.value != 0
+              ? TextButton(
+              onPressed: goToPreviousPage, child: Text("Previous"))
+              : Container()),
+          
+              Obx(() => storesController.currentPage.value != 7 ? TextButton(
+              onPressed: goToNextPage, child: Text("Next"))
+              : Container())
+        ],
+      );
+    },
+  );
+}
 mainWindow(){
   return Container(
     color: Colors.white,

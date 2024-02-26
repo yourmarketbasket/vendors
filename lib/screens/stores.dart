@@ -77,7 +77,7 @@ class _StoresScreenState extends State<StoresScreen> {
                                   ),
                                 ],
                               ),
-                              ButtonContainer(icon: Icons.refresh_rounded, onPressed: (){ storesController.getStores();}),
+                              ButtonContainer(icon: Icons.refresh_rounded, onPressed: (){}),
                             
                             
                             ],
