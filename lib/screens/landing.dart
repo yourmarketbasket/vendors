@@ -157,6 +157,16 @@ class _LandingScreenState extends State<LandingScreen> {
             child: Icon(Icons.notes_rounded),
             label: "Logs",
           ),
+          SpeedDialChild(
+            shape: CircleBorder(),
+            child: Icon(Icons.settings),
+            label: "Settings",
+          ),
+          SpeedDialChild(
+            shape: CircleBorder(),
+            child: Icon(Icons.line_axis),
+            label: "Analysis",
+          ),
 
 
         ],

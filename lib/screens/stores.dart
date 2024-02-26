@@ -33,24 +33,10 @@ class _StoresScreenState extends State<StoresScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
 
-        
         Padding(
-          padding: const EdgeInsets.only(left:20.0, right: 20),
-          child: Row( 
-              mainAxisAlignment: MainAxisAlignment.end,         
-              children: [
-                ButtonContainer(icon: Icons.toggle_off_outlined, onPressed: (){openDialog(context);}),
-                ButtonContainer(icon: Icons.terminal_sharp, onPressed: (){}),
-                ButtonContainer(icon: Icons.line_axis_rounded, onPressed: (){}),
-                ButtonContainer(icon: Icons.add_business_sharp, onPressed: (){}),
-                ButtonContainer(icon: Icons.settings, onPressed: (){}),
-                ButtonContainer(icon: Icons.refresh_rounded, onPressed: (){ storesController.getStores();}),
-              ],
-            ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left:20.0, right: 20),
+          padding: const EdgeInsets.only(left:20.0, right: 20, top: 20),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -63,19 +49,35 @@ class _StoresScreenState extends State<StoresScreen> {
                         Obx(() {
                           final store = storesController.selectedStore.value.isNotEmpty ? jsonDecode(storesController.selectedStore.value) : null;
                           return Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                store != null ? store['storename'].toUpperCase() : "No Store Selected",
-                                style: TextStyle(
-                                  color: store != null ? AppTheme.mainColor : AppTheme.dangerColor,
-                                ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        store != null ? store['storename'].toUpperCase() : "No Store Selected",
+                                        style: TextStyle(
+                                          color: store != null ? AppTheme.mainColor : AppTheme.dangerColor,
+                                        ),
+                                      ),
+                                      Icon(
+                                        store != null ? Icons.signal_cellular_alt : Icons.signal_cellular_connected_no_internet_0_bar,
+                                        color: store != null ? AppTheme.mainColor : AppTheme.dangerColor,
+                                        size: 20,
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    store != null ? store['storetype'].toUpperCase() : "",
+                                    style: TextStyle(color: const Color.fromARGB(255, 147, 144, 144), fontSize: 10),
+                                  ),
+                                ],
                               ),
-                              Icon(
-                                store != null ? Icons.signal_cellular_alt : Icons.signal_cellular_connected_no_internet_0_bar,
-                                color: store != null ? AppTheme.mainColor : AppTheme.dangerColor,
-                                size: 20,
-                              ),
+                              ButtonContainer(icon: Icons.refresh_rounded, onPressed: (){ storesController.getStores();}),
+                            
+                            
                             ],
                           );
                         }),

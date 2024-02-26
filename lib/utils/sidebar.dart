@@ -129,10 +129,8 @@ class _SidebarState extends State<Sidebar> {
     // Delete user ID from SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('userid');
-    print("userid removed");
 
     await prefs.remove("selectedStore");
-    print("selectedStore removed");
 
     storesController.selectedStore.value = "";
 
