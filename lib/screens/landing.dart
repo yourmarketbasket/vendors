@@ -146,9 +146,17 @@ class _LandingScreenState extends State<LandingScreen> {
           ),
           SpeedDialChild(
             shape: CircleBorder(),
+            child: Icon(Icons.toggle_on_outlined),
+            label: "Toggle Store",
+            onTap: (){
+              openDialog(context);
+            }
+          ),
+          SpeedDialChild(
+            shape: CircleBorder(),
             child: Icon(Icons.notes_rounded),
             label: "Logs",
-          )
+          ),
 
 
         ],
