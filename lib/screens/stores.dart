@@ -20,6 +20,7 @@ class _StoresScreenState extends State<StoresScreen> {
   final ScrollController _scrollController = ScrollController();
   LandingController landingController = Get.put(LandingController());
   StoresController storesController = Get.put(StoresController());
+  TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -28,27 +29,28 @@ class _StoresScreenState extends State<StoresScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Obx((){
+      final store = storesController.selectedStore.value.isNotEmpty ? jsonDecode(storesController.selectedStore.value) : null;                       
+
+      return storesController.selectedStore.value.isNotEmpty ? Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
 
-        Padding(
+         Padding(
           padding: const EdgeInsets.only(left:20.0, right: 20, top: 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Obx(() {
-                          final store = storesController.selectedStore.value.isNotEmpty ? jsonDecode(storesController.selectedStore.value) : null;
-                          return Row(
+                         Row(
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -79,14 +81,52 @@ class _StoresScreenState extends State<StoresScreen> {
                             
                             
                             ],
-                          );
-                        }),
+                          )
 
                       ],
                     ),
                   ),
+                  
+                  Row(
+                    children: [
+                      Container(
+                        width: 300,
+                        height: 35,
+                        padding: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.white),
+                          borderRadius: BorderRadius.circular(5)
+                          
+                        ),
+                        child: TextFormField(                      
+                          controller: _searchController,
+                          style: TextStyle(color: Colors.white, fontSize: 12), 
+                        
+                          decoration: InputDecoration(
+                            hintText: "Search...",
+                            hintStyle: TextStyle(color: Colors.white, fontSize: 12),
+                            border: InputBorder.none,
+                            labelStyle: TextStyle(color: Colors.white),
+                            
+                          ),                 
+                        
+                        ),
+                      ),
+                      SizedBox(width: 5,),
+                      ElevatedButton(
+                        onPressed: (){}, 
+                        child: Icon(Icons.search, color: Colors.white,),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                          backgroundColor: AppTheme.mainColor,                          
+                          
+                        )
+                      )
+                    ],
+                  )
                  ],
               )
+
             ],
           ),
         ),
@@ -94,6 +134,18 @@ class _StoresScreenState extends State<StoresScreen> {
 
        
       ],
+    ): Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(Icons.error, color: AppTheme.dangerColor,),
+          Text("No Store Selected", style: TextStyle(color: AppTheme.dangerColor),),
+        ],
+      ),
     );
+
+    });
+    
   }
 }
