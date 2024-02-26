@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -22,8 +24,7 @@ class _StoresScreenState extends State<StoresScreen> {
   @override
   void initState() {
     super.initState();
-    landingController.getUserDetails();
-    storesController.getStores();
+    
   }
   @override
   Widget build(BuildContext context) {
@@ -32,22 +33,7 @@ class _StoresScreenState extends State<StoresScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
 
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Obx(() => Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(storesController.selectedStore.value!=null && !storesController.selectedStore.value.isEmpty ? storesController.selectedStore.value : "No Store Selected", style: TextStyle(color: storesController.selectedStore.value!=null && !storesController.selectedStore.value.isEmpty ? AppTheme.mainColor: AppTheme.dangerColor,),),
-                  Icon(storesController.selectedStore.value!=null && !storesController.selectedStore.value.isEmpty ? Icons.signal_cellular_alt: Icons.signal_cellular_connected_no_internet_0_bar, color: storesController.selectedStore.value!=null && !storesController.selectedStore.value.isEmpty ? AppTheme.mainColor : AppTheme.dangerColor, size: 20,),
-                ],
-              )),
-            ],
-          ),
-        ),
-        Divider(),
+        
         Padding(
           padding: const EdgeInsets.only(left:20.0, right: 20),
           child: Row( 
@@ -69,50 +55,35 @@ class _StoresScreenState extends State<StoresScreen> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    children: [
-                      Icon(Icons.business_center,color: Colors.white),
-                      Text("Registered Stores", style: TextStyle(color: Colors.white),),
-                    ],
-                  ),
-                  Container(
-                    height: 400,
-                    width: 350,
-                    child: ListView.builder(
-                      padding: EdgeInsets.all(8),
-                      controller: _scrollController,
-                      itemCount: storesController.Stores.value['data'].length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          margin: EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.white),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: CheckboxListTile(
-                            activeColor: MaterialStateColor.resolveWith((states) => AppTheme.mainColor),
-                            tileColor: Color.fromARGB(255, 6, 3, 56),
-                            controlAffinity: ListTileControlAffinity.leading,
-                            subtitle:Text(storesController.Stores.value['data'][index]['storetype'].toUpperCase(), style: TextStyle(color: const Color.fromARGB(255, 116, 115, 115), fontSize: 10),), 
-                            title: Text(storesController.Stores.value['data'][index]['storename'].toUpperCase(), style: TextStyle(color: Colors.white, fontSize: 12),),
-                            value: _selectedItems.contains(storesController.Stores.value['data'][index]['storename']),
-                            onChanged: (bool? value) {
-                              setState(() {
-                                if (value != null) {
-                                  if (value) {
-                                    _selectedItems.add(storesController.Stores.value['data'][index]['storename']);
-                                  } else {
-                                    _selectedItems.remove(storesController.Stores.value['data'][index]['storename']);
-                                  }
-                                }
-                              });
-                            },
-                          ),
-                        );
-                      },
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Obx(() {
+                          final store = storesController.selectedStore.value.isNotEmpty ? jsonDecode(storesController.selectedStore.value) : null;
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                store != null ? store['storename'].toUpperCase() : "No Store Selected",
+                                style: TextStyle(
+                                  color: store != null ? AppTheme.mainColor : AppTheme.dangerColor,
+                                ),
+                              ),
+                              Icon(
+                                store != null ? Icons.signal_cellular_alt : Icons.signal_cellular_connected_no_internet_0_bar,
+                                color: store != null ? AppTheme.mainColor : AppTheme.dangerColor,
+                                size: 20,
+                              ),
+                            ],
+                          );
+                        }),
+
+                      ],
                     ),
-                  )
-                ],
+                  ),
+                 ],
               )
             ],
           ),

@@ -26,5 +26,14 @@ class StoresController{
     }
 
   }
+
+  void getSelectedStore() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? store = prefs.getString("selectedStore");
+    if(store!=null){
+      selectedStore.value = store;
+    }
+
+  }
   
 }

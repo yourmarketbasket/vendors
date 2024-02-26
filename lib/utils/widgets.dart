@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -188,13 +190,13 @@ Widget ButtonContainer({
     padding: EdgeInsets.all(5),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(3),
-      color: Color.fromARGB(255, 11, 3, 59),
+      color: Color.fromARGB(255, 14, 5, 77),
     ),
     child: InkWell(
       onTap: onPressed, 
       child: Row(
         children: [
-          Icon(icon, color: Colors.white, size: 16,)
+          Icon(icon, color: Colors.white, size: 20,)
         ],
       )
     ),
@@ -204,7 +206,8 @@ Widget ButtonContainer({
 void openDialog(BuildContext context) async {
   StoresController storesController = Get.put(StoresController());
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String selectedStore = prefs.getString('selectedStore') ?? '';
+  String selectedStoreJson = prefs.getString('selectedStore') ?? '';
+  Map<String, dynamic>? selectedStore = selectedStoreJson.isNotEmpty ? jsonDecode(selectedStoreJson) : null;
   Map<String, dynamic> stores = storesController.Stores.value; // Replace with your list of stores
 
   showDialog(
@@ -215,7 +218,6 @@ void openDialog(BuildContext context) async {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
-        
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -235,23 +237,22 @@ void openDialog(BuildContext context) async {
                 title: Text(storeName, style: TextStyle(color: Colors.white)),                
                 activeColor: AppTheme.mainColor,                 
                 value: storeId,
-                groupValue: selectedStore,
+                groupValue: selectedStore != null && selectedStore['_id'] == storeId ? storeId : null,
                 onChanged: (value) async {
                   SharedPreferences prefs = await SharedPreferences.getInstance();
-                  await prefs.setString('selectedStore', value!);
-                  storesController.selectedStore.value = storeName;
+                  final selectedStoreJson = jsonEncode(stores['data'][index]);
+                  await prefs.setString('selectedStore', selectedStoreJson);
+                  storesController.selectedStore.value = selectedStoreJson;
                   Navigator.of(context).pop();
                 },
               );
             },
-          )
-
+          ),
         ),
       );
     },
   );
 }
-
 
 mainWindow(){
   return Container(

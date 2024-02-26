@@ -1,5 +1,9 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:nisoko_vendors/controllers/landing-controller.dart';
+import 'package:nisoko_vendors/controllers/stores-controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:nisoko_vendors/screens/landing.dart';
 import 'package:nisoko_vendors/screens/login.dart';
@@ -8,9 +12,25 @@ void main() {
   runApp(const EntryPage());
 }
 
-class EntryPage extends StatelessWidget {
+class EntryPage extends StatefulWidget {
   const EntryPage({Key? key});
 
+  @override
+  State<EntryPage> createState() => _EntryPageState();
+}
+
+class _EntryPageState extends State<EntryPage> {
+  LandingController landingController = Get.put(LandingController());
+  StoresController storesController = Get.put(StoresController());
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    landingController.getUserDetails();
+    storesController.getStores();
+    storesController.getSelectedStore();
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

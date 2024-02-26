@@ -4,8 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:nisoko_vendors/controllers/landing-controller.dart';
+import 'package:nisoko_vendors/controllers/stores-controller.dart';
 import 'package:nisoko_vendors/screens/login.dart';
 import 'package:nisoko_vendors/utils/colors.dart';
+import 'package:nisoko_vendors/utils/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Sidebar extends StatefulWidget {
@@ -15,11 +17,15 @@ class Sidebar extends StatefulWidget {
 
 class _SidebarState extends State<Sidebar> {
   LandingController landingController = Get.put(LandingController());
+  StoresController storesController = Get.put(StoresController());
 
   @override
   void initState() {
     super.initState();
     landingController.getUserDetails();
+    if(storesController.selectedStore.value==null){
+      openDialog(context);
+    }
   }
 
   @override
@@ -89,7 +95,7 @@ class _SidebarState extends State<Sidebar> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("\u00A9"+DateTime.now().year.toString()+"Nisoko Technologies. All Rights Reserved", style: TextStyle(fontSize: 10, color: AppTheme.backgroundColor),),
+              Text("\u00A9"+DateTime.now().year.toString()+"Nisoko Technologies.", style: TextStyle(fontSize: 10, color: AppTheme.backgroundColor),),
             ],
           )
 
@@ -123,10 +129,17 @@ class _SidebarState extends State<Sidebar> {
     // Delete user ID from SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('userid');
+    print("userid removed");
+
+    await prefs.remove("selectedStore");
+    print("selectedStore removed");
+
+    storesController.selectedStore.value = "";
 
     // Navigate to the login screen
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => LoginScreen()),
     );
   }
+
 }
