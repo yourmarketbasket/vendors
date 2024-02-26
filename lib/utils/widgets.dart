@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:nisoko_vendors/controllers/landing-controller.dart';
+import 'package:nisoko_vendors/controllers/stores-controller.dart';
 import 'package:nisoko_vendors/utils/colors.dart';
 import 'package:nisoko_vendors/utils/functions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 SizedBox sideBar(BuildContext context){
   LandingController landingController = Get.put(LandingController());
@@ -196,6 +198,57 @@ Widget ButtonContainer({
         ],
       )
     ),
+  );
+}
+
+void openDialog(BuildContext context) async {
+  StoresController storesController = Get.put(StoresController());
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String selectedStore = prefs.getString('selectedStore') ?? '';
+  Map<String, dynamic> stores = storesController.Stores.value; // Replace with your list of stores
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        backgroundColor: AppTheme.backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Select a Store', style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        content: Container(
+          width: 300,
+          height: 250, 
+          // Adjust height as needed
+          child: ListView.builder(
+            itemCount: stores['data'].length,
+            itemBuilder: (BuildContext context, int index) {
+              final storeName = stores["data"][index]['storename'];
+              final storeId = stores["data"][index]['_id'];
+              return RadioListTile<String>(
+                title: Text(storeName, style: TextStyle(color: Colors.white)),                
+                activeColor: AppTheme.mainColor,                 
+                value: storeId,
+                groupValue: selectedStore,
+                onChanged: (value) async {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('selectedStore', value!);
+                  storesController.selectedStore.value = storeName;
+                  Navigator.of(context).pop();
+                },
+              );
+            },
+          )
+
+        ),
+      );
+    },
   );
 }
 

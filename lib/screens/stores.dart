@@ -32,11 +32,20 @@ class _StoresScreenState extends State<StoresScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Hello ${landingController.userdetails['data']['fname']}, Welcome to Nisoko', style: TextStyle(color: Colors.white, fontSize: 12),),
-          ],
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Obx(() => Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(storesController.selectedStore.value!=null && !storesController.selectedStore.value.isEmpty ? storesController.selectedStore.value : "No Store Selected", style: TextStyle(color: storesController.selectedStore.value!=null && !storesController.selectedStore.value.isEmpty ? AppTheme.mainColor: AppTheme.dangerColor,),),
+                  Icon(storesController.selectedStore.value!=null && !storesController.selectedStore.value.isEmpty ? Icons.signal_cellular_alt: Icons.signal_cellular_connected_no_internet_0_bar, color: storesController.selectedStore.value!=null && !storesController.selectedStore.value.isEmpty ? AppTheme.mainColor : AppTheme.dangerColor, size: 20,),
+                ],
+              )),
+            ],
+          ),
         ),
         Divider(),
         Padding(
@@ -44,11 +53,11 @@ class _StoresScreenState extends State<StoresScreen> {
           child: Row( 
               mainAxisAlignment: MainAxisAlignment.end,         
               children: [
+                ButtonContainer(icon: Icons.toggle_off_outlined, onPressed: (){openDialog(context);}),
                 ButtonContainer(icon: Icons.terminal_sharp, onPressed: (){}),
                 ButtonContainer(icon: Icons.line_axis_rounded, onPressed: (){}),
                 ButtonContainer(icon: Icons.add_business_sharp, onPressed: (){}),
                 ButtonContainer(icon: Icons.settings, onPressed: (){}),
-                ButtonContainer(icon: Icons.toggle_off_outlined, onPressed: (){}),
                 ButtonContainer(icon: Icons.refresh_rounded, onPressed: (){ storesController.getStores();}),
               ],
             ),

@@ -1,5 +1,6 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:nisoko_vendors/controllers/landing-controller.dart';
 import 'package:nisoko_vendors/controllers/stores-controller.dart';
@@ -121,10 +122,39 @@ class _LandingScreenState extends State<LandingScreen> {
         ]
       ),
       drawer: Sidebar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: openDrawer,
-        child: Icon(Icons.menu),
+      floatingActionButton: SpeedDial(
+        buttonSize: Size(50, 50),
+        backgroundColor: AppTheme.mainColor,
+        overlayColor: Colors.transparent,
+        animatedIcon: AnimatedIcons.menu_close,
+        children: [
+          SpeedDialChild(
+            shape: CircleBorder(),
+            child: Icon(Icons.menu_rounded),
+            label: "Sidebar",
+            onTap: openDrawer
+          ),
+          SpeedDialChild(
+            shape: CircleBorder(),
+            child: Icon(Icons.add_business_outlined),
+            label: "Add Store",
+          ),
+          SpeedDialChild(
+            shape: CircleBorder(),
+            child: Icon(Icons.terminal),
+            label: "POS",
+          ),
+          SpeedDialChild(
+            shape: CircleBorder(),
+            child: Icon(Icons.notes_rounded),
+            label: "Logs",
+          )
+
+
+        ],
       ),
     );
   }
+
+  
 }

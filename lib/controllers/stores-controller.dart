@@ -7,6 +7,7 @@ import "package:shared_preferences/shared_preferences.dart";
 import 'package:http/http.dart' as http;
 class StoresController{
   RxMap<String, dynamic> Stores = Map<String, dynamic>().obs;
+  RxString selectedStore = "".obs;
 
   void getStores() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
