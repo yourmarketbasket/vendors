@@ -134,45 +134,44 @@ class _StoresScreenState extends State<StoresScreen> {
                   storeProducts!=null ? Container(
                     height: 0.6*dh,
                     width: 0.3*dw,
-                    child: ListView.builder(                      
+                    child: ListView.builder(
                       itemCount: storeProducts.length,
                       itemBuilder: (BuildContext context, int index) {
                         final productName = storeProducts[index]['name'] ?? ''; // Ensure product name is not null
                         final isSelected = _selectedItems.contains(productName);
 
-                        return ListTile(
-                          // contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                        return CheckboxListTile(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), // Adjust padding as needed
                           title: Text(
                             productName,
                             style: TextStyle(color: Colors.white),
                           ),
-                          leading: Checkbox(
-                            value: isSelected,
-                            onChanged: (bool? value) {
-                              if (value != null) {
-                                setState(() {
-                                  if (value) {
-                                    _selectedItems.add(productName);
-                                  } else {
-                                    _selectedItems.remove(productName);
-                                  }
-                                });
-                              }
-                            },
-                            activeColor: AppTheme.mainColor, // Customize the checkbox color as needed
-                          ),
-                          trailing: isSelected // Show delete and edit icons if checkbox is selected
+                          value: isSelected,
+                          onChanged: (bool? value) {
+                            if (value != null) {
+                              setState(() {
+                                if (value) {
+                                  _selectedItems.add(productName);
+                                } else {
+                                  _selectedItems.remove(productName);
+                                }
+                              });
+                            }
+                          },
+                          controlAffinity: ListTileControlAffinity.leading, // Place the checkbox to the left of the title
+                          activeColor: AppTheme.mainColor, // Customize the checkbox color as needed
+                          secondary: isSelected // Show delete and edit icons if checkbox is selected
                               ? Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.edit_outlined, color: Colors.white),
+                                      icon: Icon(Icons.edit, color: Colors.white),
                                       onPressed: () {
                                         // Handle edit action
                                       },
                                     ),
                                     IconButton(
-                                      icon: Icon(Icons.delete_outline_outlined, color: Colors.white),
+                                      icon: Icon(Icons.delete, color: Colors.white),
                                       onPressed: () {
                                         // Handle delete action
                                       },
