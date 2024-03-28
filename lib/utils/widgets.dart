@@ -241,9 +241,10 @@ void openSelectStoreDialog(BuildContext context) async {
                 groupValue: selectedStore != null && selectedStore['_id'] == storeId ? storeId : null,
                 onChanged: (value) async {
                   SharedPreferences prefs = await SharedPreferences.getInstance();
-                  final selectedStoreJson = jsonEncode(stores['data'][index]);
+                  final selectedStoreJson = jsonEncode(stores['data'][index]);                  
                   await prefs.setString('selectedStore', selectedStoreJson);
                   storesController.selectedStore.value = selectedStoreJson;
+                  storesController.getStoreProducts(stores['data'][index]['_id']);
                   Navigator.of(context).pop();
                 },
               );
