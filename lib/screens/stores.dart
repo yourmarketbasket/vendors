@@ -52,7 +52,7 @@ class _StoresScreenState extends State<StoresScreen> {
          Padding(
           padding: const EdgeInsets.only(left:20.0, right: 20, top: 20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -93,9 +93,10 @@ class _StoresScreenState extends State<StoresScreen> {
               ),
               
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    width: 300,
+                    width: 0.6*dw,
                     height: 35,
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
@@ -129,13 +130,20 @@ class _StoresScreenState extends State<StoresScreen> {
                   )
                 ],
               ),
+              Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   storeProducts!=null ? Column(
                     children: [
+                      Row(
+                        children: [
+                          Icon(Icons.apps, color: AppTheme.mainColor),
+                          Text("All Products", style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
                       Container(
-                        width: 0.3*dw,
+                        width: 0.25*dw,
                         child: ListTile(
                           title: Text(_selectedItems.isEmpty? "Select all" : "Unselect All", style: TextStyle(color: Colors.white)),
                           leading: IconButton(
@@ -190,7 +198,7 @@ class _StoresScreenState extends State<StoresScreen> {
 
                       Container(
                         height: 0.6*dh,
-                        width: 0.3*dw,
+                        width: 0.25*dw,
                         child: ListView.builder(
                         itemCount: storeProducts.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -211,11 +219,13 @@ class _StoresScreenState extends State<StoresScreen> {
                                 });
                               },
                             ),
-                            onTap: () {
+                            onTap: () {                                      
                               setState(() {
                                 if (isSelected) {
                                   _selectedItems.remove(productName);
                                 } else {
+                                  storesController.product.value = storeProducts[index];
+                                  showProductDetailsDialog(context, storesController.product, dh, dw);
                                   _selectedItems.add(productName);
                                 }
                               });
@@ -239,7 +249,11 @@ class _StoresScreenState extends State<StoresScreen> {
                                     ],
                                   )
                                 : ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      storesController.product.value = storeProducts[index];
+                                      showProductDetailsDialog(context, storesController.product, dh, dw);
+
+                                    },
                                     child: Text("view"),
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -252,31 +266,17 @@ class _StoresScreenState extends State<StoresScreen> {
 
                           );
                         },
-                      )
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      ,
+                      ),
                       ),
                     ],
-                  ): Expanded(child: Center(child: Column(
+                  ): Expanded(child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text("No products in ${store['storename'].toUpperCase()}", style: TextStyle(color: Colors.white),),
+                      Icon(Icons.error, color: AppTheme.dangerColor,),
+                      Text("No products in store [${store['storename'].toUpperCase()}]", style: TextStyle(color: AppTheme.dangerColor),),
                     ],
-                  )))
+                  ))
                 ],
               )
 

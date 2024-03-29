@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:http/http.dart';
 import 'package:nisoko_vendors/controllers/landing-controller.dart';
 import 'package:nisoko_vendors/controllers/stores-controller.dart';
 import 'package:nisoko_vendors/utils/colors.dart';
@@ -312,6 +313,176 @@ void openSelectStoreDialog(BuildContext context) async {
 }
 
 
+Future<void> showProductDetailsDialog(BuildContext context, Map<String, dynamic> productData, double height, double width) async {
+  final RxInt sliderIndex = Get.put(StoresController().sliderIndex);
+  StoresController storesController = Get.put(StoresController());
+
+  void _nextImage() {
+    if (sliderIndex.value < productData['avatar'].length - 1) {
+      sliderIndex.value++;
+    }
+  }
+
+  void _previousImage() {
+    if (sliderIndex.value > 0) {
+      sliderIndex.value--;
+    }
+  }
+
+  final result = await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: SizedBox(
+          width: 0.7*width,
+          height: 0.55*height,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Obx(() {
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(5.0),
+                              child: Image.network(
+                                productData['avatar'][sliderIndex.value],
+                                width: double.infinity,
+                                height: double.infinity,
+                                fit: BoxFit.fill,
+                                loadingBuilder: (context, child, loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.arrow_back),
+                                onPressed: _previousImage,
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.arrow_forward),
+                                onPressed: _nextImage,
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    }),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        children: [
+                          Text(
+                            '${productData['name']}[${productData['model']}]',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          productData['approved'] ? Icon(Icons.verified_outlined, color: AppTheme.backgroundColor,): Icon(Icons.circle, color: AppTheme.dangerColor)
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Description: ${productData['description']}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      Divider(),
+                      Text(
+                        'Details',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Category: ${productData['category']}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      Text(
+                        'Subcategory: ${productData['subcategory']}',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      Wrap(
+                        children: [
+                          Text(
+                            'Qtty: ${formatNumber(productData['quantity'])} units',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 13),
+                          ),
+                          SizedBox(width: 20,),
+                          Text(
+                            'BP: ${formatNumber(productData['bp'])} KES',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 13),
+                          ),
+                          SizedBox(width: 20,),
+                          Text(
+                            'SP: ${formatNumber(productData['sp'])} KES',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontSize: 13),
+                          ),                          
+                        ],
+                      ),
+                      Divider(),
+                      Text(
+                        'ROI',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Profit: ${formatNumber(((productData['quantity']*productData['sp'])-(productData['quantity']*productData['bp'])))}',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      Text(
+                        'Percentage Profit: ${((productData['quantity'] * productData['sp'] - productData['quantity'] * productData['bp']) / (productData['quantity'] * productData['bp']) * 100).toStringAsFixed(1)}%',
+                      ),
+
+                      
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+
+  if (result == null) {
+    sliderIndex.value = 0;
+  } else {
+    sliderIndex.value = 0;
+  }
+}
 
 Future<void> showProductAddDialog(BuildContext context) async {
   int currentPage = 0;

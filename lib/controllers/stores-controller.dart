@@ -9,6 +9,8 @@ class StoresController extends GetxController{
   RxMap<String, dynamic> Stores = Map<String, dynamic>().obs;
   RxString selectedStore = "".obs;
   RxString storeproducts = "".obs;
+  RxMap<String, dynamic> product = Map<String, dynamic>().obs;
+  RxInt sliderIndex = 0.obs;
 
   RxInt currentPage = 0.obs;
 
