@@ -203,6 +203,61 @@ Widget ButtonContainer({
   );
 }
 
+
+Widget productTile({
+  required String productName,
+  required bool isChecked,
+  required Function(bool?)? onChanged,
+  required VoidCallback? onDelete,
+  required VoidCallback? onEdit,
+  required bool isSelectAllTile,
+  required VoidCallback? onSelectAll,
+  required VoidCallback? onDeleteAll,
+  required List<String> selectedItems,
+  required List<dynamic> storeProducts,
+}) {
+  bool isIndeterminate = false;
+
+  if (!isSelectAllTile) {
+    // Check if the checkbox should display an indeterminate state
+    isIndeterminate = isChecked && selectedItems.length < storeProducts.length;
+  }
+
+  return ListTile(
+    title: Text(productName),
+    leading: isSelectAllTile
+        ? Checkbox(
+            tristate: true,
+            value: isChecked ? true : isIndeterminate ? null : false,
+            onChanged: onChanged,
+          )
+        : Checkbox(
+            value: isChecked,
+            onChanged: onChanged,
+          ),
+    trailing: isSelectAllTile
+        ? IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: onDeleteAll,
+          )
+        : isChecked
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.edit),
+                    onPressed: onEdit,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: onDelete,
+                  ),
+                ],
+              )
+            : null,
+  );
+}
+
 void openSelectStoreDialog(BuildContext context) async {
   StoresController storesController = Get.put(StoresController());
   SharedPreferences prefs = await SharedPreferences.getInstance();

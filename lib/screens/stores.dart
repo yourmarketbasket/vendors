@@ -18,6 +18,7 @@ class StoresScreen extends StatefulWidget {
 
 class _StoresScreenState extends State<StoresScreen> {
   List<String> _selectedItems = [];
+  bool _selectAll = false;
   final ScrollController _scrollController = ScrollController();
   LandingController landingController = Get.put(LandingController());
   StoresController storesController = Get.put(StoresController());
@@ -131,57 +132,144 @@ class _StoresScreenState extends State<StoresScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  storeProducts!=null ? Container(
-                    height: 0.6*dh,
-                    width: 0.3*dw,
-                    child: ListView.builder(
-                      itemCount: storeProducts.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final productName = storeProducts[index]['name'] ?? ''; // Ensure product name is not null
-                        final isSelected = _selectedItems.contains(productName);
-
-                        return CheckboxListTile(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), // Adjust padding as needed
-                          title: Text(
-                            productName,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          value: isSelected,
-                          onChanged: (bool? value) {
-                            if (value != null) {
+                  storeProducts!=null ? Column(
+                    children: [
+                      Container(
+                        width: 0.3*dw,
+                        child: ListTile(
+                          title: Text(_selectedItems.isEmpty? "Select all" : "Unselect All", style: TextStyle(color: Colors.white)),
+                          leading: IconButton(
+                            icon: _selectedItems.isEmpty
+                                ? Icon(Icons.circle_outlined, color: Colors.white,) // Show outline circle if none are selected
+                                : _selectedItems.length == storeProducts.length
+                                    ? Icon(Icons.check_circle_outline, color: Colors.white,) // Show checked outline circle if all are selected
+                                    : Icon(Icons.circle, color: Colors.white,), // Show circle if some are selected
+                            onPressed: () {
                               setState(() {
-                                if (value) {
-                                  _selectedItems.add(productName);
+                                bool isSelected = _selectedItems.isNotEmpty;
+                                if (isSelected) {
+                                  _selectedItems.clear(); // Deselect all products
                                 } else {
-                                  _selectedItems.remove(productName);
+                                  _selectedItems.addAll(storeProducts
+                                      .map<String?>((product) => product['name']?.toString())
+                                      .where((name) => name != null)
+                                      .cast<String>());
                                 }
                               });
-                            }
+                            },
+                          ),
+                          onTap: () {
+                            setState(() {
+                              bool isSelected = _selectedItems.isNotEmpty;
+                              if (isSelected) {
+                                _selectedItems.clear(); // Deselect all products
+                              } else {
+                                _selectedItems.addAll(storeProducts
+                                    .map<String?>((product) => product['name']?.toString())
+                                    .where((name) => name != null)
+                                    .cast<String>());
+                              }
+                            });
                           },
-                          controlAffinity: ListTileControlAffinity.leading, // Place the checkbox to the left of the title
-                          activeColor: AppTheme.mainColor, // Customize the checkbox color as needed
-                          secondary: isSelected // Show delete and edit icons if checkbox is selected
+                          trailing: _selectedItems.isNotEmpty
                               ? Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.edit, color: Colors.white),
-                                      onPressed: () {
-                                        // Handle edit action
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.delete, color: Colors.white),
+                                      icon: Icon(Icons.delete_outline_rounded, color: AppTheme.dangerColor),
                                       onPressed: () {
                                         // Handle delete action
                                       },
                                     ),
                                   ],
                                 )
-                              : null, // Hide icons if checkbox is not selected
-                        );
-                      },
-                    ),
+                              : null,
+                        ),
+
+                      ),
+
+                      Container(
+                        height: 0.6*dh,
+                        width: 0.3*dw,
+                        child: ListView.builder(
+                        itemCount: storeProducts.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final productName = storeProducts[index]['name']?.toString() ?? '';
+                          final isSelected = _selectedItems.contains(productName);
+                      
+                          return ListTile(
+                            title: Text(productName, style: TextStyle(color: Colors.white)),
+                            leading: IconButton(
+                              icon: isSelected ? Icon(Icons.check_circle, color: AppTheme.mainColor,) : Icon(Icons.circle_outlined, color: Colors.white,),
+                              onPressed: () {
+                                setState(() {
+                                  if (isSelected) {
+                                    _selectedItems.remove(productName);
+                                  } else {
+                                    _selectedItems.add(productName);
+                                  }
+                                });
+                              },
+                            ),
+                            onTap: () {
+                              setState(() {
+                                if (isSelected) {
+                                  _selectedItems.remove(productName);
+                                } else {
+                                  _selectedItems.add(productName);
+                                }
+                              });
+                            },
+                            trailing: isSelected
+                                ? Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.edit_document, color: Colors.white,),
+                                        onPressed: () {
+                                          // Handle edit action
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.delete, color: AppTheme.dangerColor,),
+                                        onPressed: () {
+                                          // Handle delete action
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                : ElevatedButton(
+                                    onPressed: () {},
+                                    child: Text("view"),
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                          );
+                        },
+                      )
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      
+                      ,
+                      ),
+                    ],
                   ): Expanded(child: Center(child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
