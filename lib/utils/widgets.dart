@@ -337,13 +337,13 @@ Future<void> showProductDetailsDialog(BuildContext context, Map<String, dynamic>
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: SizedBox(
-          width: 0.7*width,
-          height: 0.55*height,
+          width: 0.5*width,
+          height: 0.45*height,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: 3,
+                flex: 2,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -358,7 +358,7 @@ Future<void> showProductDetailsDialog(BuildContext context, Map<String, dynamic>
                               child: Image.network(
                                 productData['avatar'][sliderIndex.value],
                                 width: double.infinity,
-                                height: double.infinity,
+                                height: double.infinity*0.5,
                                 fit: BoxFit.fill,
                                 loadingBuilder: (context, child, loadingProgress) {
                                   if (loadingProgress == null) {

@@ -28,7 +28,7 @@ class _LandingScreenState extends State<LandingScreen> {
   void initState() {
     super.initState();
     doWhenWindowReady(() {
-      appWindow.size = Size(1250, 650);
+      appWindow.maximize();
       
     });
     landingController.getUserDetails();
@@ -50,6 +50,7 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
    final h = MediaQuery.of(context).size.height;
    final w = MediaQuery.of(context).size.width;
+  final ScrollController _scrollController = ScrollController();
 
    String _currentPage = landingController.currentPage.value; 
 
@@ -57,6 +58,7 @@ class _LandingScreenState extends State<LandingScreen> {
       key: _scaffoldKey,
       backgroundColor: AppTheme.backgroundColor,
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // the draggable title bar
           WindowTitleBarBox(
@@ -106,19 +108,32 @@ class _LandingScreenState extends State<LandingScreen> {
               ),
             ),
           ),
-          Obx(() {
-            if(landingController.currentPage.value == "AccountScreen"){
-                return AccountScreen();
-            } else if(landingController.currentPage.value=="StoresScreen"){
-              return StoresScreen();
-            } else if(landingController.currentPage.value=="NotificationsScreen"){
-              return NotificationsScreen();
-            } else if(landingController.currentPage.value=="SupportScreen"){
-              return SupportScreen();
-            }else{
-              return StoresScreen();
-            }
-          }),
+          Container(
+            height: 0.9*h,
+            width: double.infinity,
+            child: Scrollbar(
+              controller: _scrollController,
+              child: ListView(
+                controller: _scrollController,
+                children: [
+                  Obx(() {
+                    if(landingController.currentPage.value == "AccountScreen"){
+                        return AccountScreen();
+                    } else if(landingController.currentPage.value=="StoresScreen"){
+                      return StoresScreen();
+                    } else if(landingController.currentPage.value=="NotificationsScreen"){
+                      return NotificationsScreen();
+                    } else if(landingController.currentPage.value=="SupportScreen"){
+                      return SupportScreen();
+                    }else{
+                      return StoresScreen();
+                    }
+                  }),
+                ],
+              ),
+            ),
+          ),
+          Text("hellow", style: TextStyle(color: Colors.white),)
         ]
       ),
       drawer: Sidebar(),

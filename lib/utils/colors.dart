@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 
 class AppTheme{
    static Color mainColor = const Color.fromARGB(255, 9, 238, 104);
-   static Color backgroundColor = Color.fromARGB(255, 8, 3, 77);
+   static Color backgroundColor = Color(0xFF282E45);
+   static Color accentBgColor = Color(0xFF1B2339);
+   static Color blueAccent = Color(0xFF50E4FF);
+
    static Color dangerColor = Color.fromARGB(255, 199, 7, 183);
 
    static WindowButtonColors windowButtonColors = WindowButtonColors(
