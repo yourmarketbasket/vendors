@@ -28,7 +28,7 @@ class _LandingScreenState extends State<LandingScreen> {
   void initState() {
     super.initState();
     doWhenWindowReady(() {
-      appWindow.maximize();
+      appWindow.minSize = Size(1250, 650);
       
     });
     landingController.getUserDetails();

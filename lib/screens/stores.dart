@@ -20,7 +20,11 @@ class StoresScreen extends StatefulWidget {
 
 class _StoresScreenState extends State<StoresScreen> {
   List<String> _selectedItems = [];
+  List<String> _selectedOrderItems = [];
+
   bool _selectAll = false;
+  bool _selectAllOrders = false;
+
   final ScrollController _scrollController = ScrollController();
   LandingController landingController = Get.put(LandingController());
   StoresController storesController = Get.put(StoresController());
@@ -47,6 +51,11 @@ class _StoresScreenState extends State<StoresScreen> {
                             storesController.storeproducts.value.isNotEmpty &&
                             storesController.storeproducts.value is String
                             ? calculateProductStatistics(storeProducts)
+                            : null;
+      final storeOrders = storesController.storeorders.value != null &&
+                            storesController.storeorders.value.isNotEmpty &&
+                            storesController.storeorders.value is String
+                            ? jsonDecode(storesController.storeorders.value)
                             : null;
                        
 
@@ -142,11 +151,16 @@ class _StoresScreenState extends State<StoresScreen> {
                       Row(
                         children: [
                           Icon(Icons.apps, color: Colors.white),
-                          Text("All Products", style: TextStyle(color: Colors.white)),
+                          Text("All Products (${storeProducts.length.toString()})", style: TextStyle(color: Colors.white)),
                         ],
                       ),
                       Container(
-                        width: 0.25*dw,
+                        margin: EdgeInsets.only(bottom: 5),
+                        decoration: BoxDecoration(
+                          color: AppTheme.accentBgColor,
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        width: 0.3*dw,
                         child: ListTile(
                           title: Text(_selectedItems.isEmpty? "Select all" : "Unselect All", style: TextStyle(color: Colors.white)),
                           leading: IconButton(
@@ -200,8 +214,12 @@ class _StoresScreenState extends State<StoresScreen> {
                       ),
 
                       Container(
-                        height: 0.6*dh,
-                        width: 0.25*dw,
+                        height: 0.25*dh,
+                        width: 0.3*dw,
+                        decoration: BoxDecoration(
+                          color: AppTheme.accentBgColor,
+                          borderRadius: BorderRadius.circular(10)
+                        ),
                         child: ListView.builder(
                         itemCount: storeProducts.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -271,6 +289,149 @@ class _StoresScreenState extends State<StoresScreen> {
                         },
                       ),
                       ),
+                      SizedBox(height: 10,),
+                      Text("Orders", style: TextStyle(color: Colors.white)),
+                      // SizedBox(height: 10,),
+                     storeOrders!=null ? Container(
+                      margin: EdgeInsets.only(bottom: 5),
+                        decoration: BoxDecoration(
+                          color: AppTheme.accentBgColor,
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        width: 0.3*dw,
+                        child: ListTile(
+                          title: Text(_selectedOrderItems.isEmpty? "Select all" : "Unselect All", style: TextStyle(color: Colors.white)),
+                          leading: IconButton(
+                            icon: _selectedOrderItems.isEmpty
+                                ? Icon(Icons.circle_outlined, color: Colors.white,) // Show outline circle if none are selected
+                                : _selectedOrderItems.length == storeOrders.length
+                                    ? Icon(Icons.check_circle_outline, color: Colors.white,) // Show checked outline circle if all are selected
+                                    : Icon(Icons.circle, color: Colors.white,), // Show circle if some are selected
+                            onPressed: () {
+                              setState(() {
+                                bool isSelected = _selectedOrderItems.isNotEmpty;
+                                if (isSelected) {
+                                  _selectedOrderItems.clear(); // Deselect all products
+                                } else {
+                                  _selectedOrderItems.addAll(storeOrders
+                                    .map<String?>((order) => order['_id'] != null ? order['_id']?.toString() : null)
+                                    .where((name) => name != null)
+                                    .cast<String>());
+
+                                }
+                              });
+                            },
+                          ),
+                          onTap: () {
+                            setState(() {
+                              bool isSelected = _selectedOrderItems.isNotEmpty;
+                              if (isSelected) {
+                                _selectedOrderItems.clear(); // Deselect all products
+                              } else {
+                                _selectedOrderItems.addAll(storeOrders
+                                    .map<String?>((order) => order['_id'] != null ? order['_id']?.toString() : null)
+                                    .where((name) => name != null)
+                                    .cast<String>());
+                              }
+                            });
+                          },
+                          trailing: _selectedOrderItems.isNotEmpty
+                              ? Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.delete_outline_rounded, color: AppTheme.dangerColor),
+                                      onPressed: () {
+                                        // Handle delete action
+                                      },
+                                    ),
+                                  ],
+                                )
+                              : null,
+                        ),
+
+                      ): Container(),
+                      storeOrders!=null ? Container(
+                        height: 0.25*dh,
+                        width: 0.3*dw,
+                        decoration: BoxDecoration(
+                          color: AppTheme.accentBgColor,
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: ListView.builder(
+                        itemCount: storeOrders.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final productName = storeOrders[index]['products']['productname']?.toString() ?? '';
+                          final tid = storeOrders[index]['_id']?.toString() ?? '';
+
+                          final isSelected = _selectedOrderItems.contains(tid);
+                      
+                          return ListTile(
+                            title: Text(productName, style: TextStyle(color: Colors.white)),
+                            leading: IconButton(
+                              icon: isSelected ? Icon(Icons.check_circle, color: AppTheme.mainColor,) : Icon(Icons.circle_outlined, color: Colors.white,),
+                              onPressed: () {
+                                setState(() {
+                                  if (isSelected) {
+                                    _selectedOrderItems.remove(tid);
+                                  } else {
+                                    _selectedOrderItems.add(tid);
+                                  }
+                                });
+                              },
+                            ),
+                            onTap: () {      
+                              setState(() {
+                                  if (isSelected) {
+                                    _selectedOrderItems.remove(tid);
+                                  } else {
+                                    _selectedOrderItems.add(tid);
+                                  }
+                                });                                
+                              // show the order details
+                            },
+                            trailing: isSelected
+                                ? Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.edit_document, color: Colors.white,),
+                                        onPressed: () {
+                                          // Handle edit action
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.delete, color: AppTheme.dangerColor,),
+                                        onPressed: () {
+                                          // Handle delete action
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                : ElevatedButton(
+                                    onPressed: () {
+                                      // show order details
+
+                                    },
+                                    child: Text("view"),
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                        RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                          );
+                        },
+                      ),
+                      ): Row(
+                        children: [
+                          Icon(Icons.error, color: Colors.white,),
+                          Text("No Running Orders", style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
                     ],
 
                   ),
@@ -299,9 +460,9 @@ class _StoresScreenState extends State<StoresScreen> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(Icons.list_alt, color: Colors.white,),
-                                    Text('Listings',style: TextStyle(color: Colors.white, ), ),
+                                    Text('Orders',style: TextStyle(color: Colors.white, ), ),
                                     Text(
-                                      formatNumber(storeProducts.length),
+                                      formatNumber(storeOrders!=null ? storeOrders.length: 0),
                                       style: TextStyle(color: Colors.white, fontSize: 40),
                                     )
                                   ],
