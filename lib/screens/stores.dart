@@ -162,7 +162,7 @@ class _StoresScreenState extends State<StoresScreen> {
                         margin: EdgeInsets.only(bottom: 5),
                         width: 0.3*dw,
                         child: ListTile(
-                          tileColor: AppTheme.mainColor,
+                          tileColor: AppTheme.accentBgColor,
                           title: Text(_selectedItems.isEmpty? "Select all" : "Unselect All", style: TextStyle(color: Colors.white)),
                           leading: IconButton(
                             icon: _selectedItems.isEmpty
@@ -218,7 +218,7 @@ class _StoresScreenState extends State<StoresScreen> {
                         height: 0.25 * dh,
                         width: 0.3 * dw,
                         decoration: BoxDecoration(
-                          color: AppTheme.mainColor
+                          color: AppTheme.accentBgColor
                         ),
                         child: SingleChildScrollView(
                           child: ListView.builder(
@@ -322,7 +322,7 @@ class _StoresScreenState extends State<StoresScreen> {
                         margin: EdgeInsets.only(bottom: 5),                        
                         width: 0.3*dw,
                         child: ListTile(
-                          tileColor: AppTheme.blueAccent,
+                          tileColor: AppTheme.accentBgColor,
                           title: Text(_selectedOrderItems.isEmpty? "Select all" : "Unselect All", style: TextStyle(color: Colors.white)),
                           leading: IconButton(
                             icon: _selectedOrderItems.isEmpty
@@ -378,7 +378,7 @@ class _StoresScreenState extends State<StoresScreen> {
                         height: 0.25*dh,
                         width: 0.3*dw,
                         decoration: BoxDecoration(
-                          color: AppTheme.blueAccent
+                          color: AppTheme.accentBgColor
                         ),
                         child: SingleChildScrollView(
                           child: ListView.builder(
@@ -397,8 +397,17 @@ class _StoresScreenState extends State<StoresScreen> {
                                 children: [
                                   Text(productName, style: TextStyle(color: Colors.white)),
                                   Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      Text(storeOrders[index]['paymentStatus']!.toString(), style: TextStyle(color: storeOrders[index]['paymentStatus']=="Completed" ? Colors.white: AppTheme.dangerColor, fontSize: 10)),
+                                      Text("${storeOrders[index]['paymentStatus']!.toString()}", style: TextStyle(color: storeOrders[index]['paymentStatus']=="Completed" ? AppTheme.mainColor: AppTheme.dangerColor, fontSize: 10)),
+                                      storeOrders[index]['paymentStatus']=="Completed" ? Text("Code: ${storeOrders[index]['transactionID']}", style: TextStyle(color: Colors.white, fontSize: 10)): Container(),
+                                      Row(
+                                        children: [
+                                          Text("TC: ${formatNumber(storeOrders[index]['products']['totalCost'])}", style: TextStyle(color: Colors.white, fontSize: 10)),
+                                          SizedBox(width: 10,),
+                                          Text("TQ: ${formatNumber(storeOrders[index]['products']['quantity'])}", style: TextStyle(color: Colors.white, fontSize: 10)),
+                                        ],
+                                      )
                                     ],
                                   ),
 
@@ -451,7 +460,7 @@ class _StoresScreenState extends State<StoresScreen> {
                                           showProductDetailsDialog(context, storesController.product, dh, dw);
                                         },
                                         child: Container(
-                                          width: 100,
+                                          width: 50,
                                           decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(20),
                                             border: Border.all(color: Colors.white), // Set the border color
@@ -461,7 +470,6 @@ class _StoresScreenState extends State<StoresScreen> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Icon(Icons.settings, color: Colors.white),
-                                              Text("manage", style: TextStyle(color: Colors.white)),
                                             ],
                                           ),
                                         ),
