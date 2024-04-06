@@ -70,6 +70,35 @@ Map<String, dynamic> calculateProductStatistics(List<dynamic> productsData) {
     'bestPerformingProducts': bestPerformingProducts,
   };
 }
+String calculateTimeDifference(String postDateString) {
+  final postDate = DateTime.parse(postDateString);
+  final now = DateTime.now();
+  final difference = now.difference(postDate);
+  
+  if (difference.inSeconds < 60) {
+    return '${difference.inSeconds} ${difference.inSeconds == 1 ? 'second' : 'seconds'} ago';
+  } else if (difference.inMinutes < 60) {
+    final seconds = difference.inSeconds % 60;
+    return '${difference.inMinutes} ${difference.inMinutes == 1 ? 'minute' : 'minutes'} ${seconds} ${seconds == 1 ? 'second' : 'seconds'} ago';
+  } else if (difference.inHours < 24) {
+    final minutes = difference.inMinutes % 60;
+    return '${difference.inHours} ${difference.inHours == 1 ? 'hour' : 'hours'} ${minutes} ${minutes == 1 ? 'minute' : 'minutes'} ago';
+  } else if (difference.inDays < 7) {
+    final hours = difference.inHours % 24;
+    return '${difference.inDays} ${difference.inDays == 1 ? 'day' : 'days'} ${hours} ${hours == 1 ? 'hour' : 'hours'} ago';
+  } else if (difference.inDays < 30) {
+    final days = difference.inDays % 7;
+    return '${difference.inDays ~/ 7} ${difference.inDays ~/ 7 == 1 ? 'week' : 'weeks'} ${days} ${days == 1 ? 'day' : 'days'} ago';
+  } else if (difference.inDays < 365) {
+    final months = difference.inDays % 30;
+    return '${difference.inDays ~/ 30} ${difference.inDays ~/ 30 == 1 ? 'month' : 'months'} ${months} ${months == 1 ? 'day' : 'days'} ago';
+  } else {
+    final years = difference.inDays % 365;
+    return '${difference.inDays ~/ 365} ${difference.inDays ~/ 365 == 1 ? 'year' : 'years'} ${years} ${years == 1 ? 'day' : 'days'} ago';
+  }
+}
+
+
 
 
 Widget buildBestPerformingProductsChart(List<Map<String, dynamic>> bestPerformingProducts, double height, double width) {

@@ -111,26 +111,23 @@ class _LandingScreenState extends State<LandingScreen> {
           Container(
             height: 0.9*h,
             width: double.infinity,
-            child: Scrollbar(
+            child: ListView(
               controller: _scrollController,
-              child: ListView(
-                controller: _scrollController,
-                children: [
-                  Obx(() {
-                    if(landingController.currentPage.value == "AccountScreen"){
-                        return AccountScreen();
-                    } else if(landingController.currentPage.value=="StoresScreen"){
-                      return StoresScreen();
-                    } else if(landingController.currentPage.value=="NotificationsScreen"){
-                      return NotificationsScreen();
-                    } else if(landingController.currentPage.value=="SupportScreen"){
-                      return SupportScreen();
-                    }else{
-                      return StoresScreen();
-                    }
-                  }),
-                ],
-              ),
+              children: [
+                Obx(() {
+                  if(landingController.currentPage.value == "AccountScreen"){
+                      return AccountScreen();
+                  } else if(landingController.currentPage.value=="StoresScreen"){
+                    return StoresScreen();
+                  } else if(landingController.currentPage.value=="NotificationsScreen"){
+                    return NotificationsScreen();
+                  } else if(landingController.currentPage.value=="SupportScreen"){
+                    return SupportScreen();
+                  }else{
+                    return StoresScreen();
+                  }
+                }),
+              ],
             ),
           ),
           Text("hellow", style: TextStyle(color: Colors.white),)
