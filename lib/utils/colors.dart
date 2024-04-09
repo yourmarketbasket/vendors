@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class AppTheme{
    static Color mainColor = const Color.fromARGB(255, 9, 238, 104);
    static Color backgroundColor = Color.fromARGB(255, 5, 3, 129);
+
    static Color accentBgColor = Color(0xFF1B2339);
    static Color blueAccent = Color(0xFF50E4FF);
 

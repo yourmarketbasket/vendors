@@ -37,16 +37,18 @@ String formatNumber(num number) {
 Map<String, dynamic> calculateProductStatistics(List<dynamic> productsData) {
   double totalProfit = 0;
   double totalCostPrice = 0;
+  double totalSellingPrice = 0;
   List<Map<String, dynamic>> bestPerformingProducts = [];
 
   // Calculate total profit and cost price
   for (var productData in productsData) {
     if (productData is Map<String, dynamic>) {
-      double costPrice = productData['bp'].toDouble();
-      double sellingPrice = productData['sp'].toDouble();
+      double costPrice = productData['bp'].toDouble()*productData['quantity'].toDouble();
+      double sellingPrice = productData['sp'].toDouble()*productData['quantity'].toDouble();
       double profit = sellingPrice - costPrice;
       totalProfit += profit;
       totalCostPrice += costPrice;
+      totalSellingPrice+=sellingPrice;
       bestPerformingProducts.add({
         'name': productData['name'],
         'profitPercentage': double.parse(((profit / costPrice) * 100).toStringAsFixed(1)),
@@ -55,7 +57,7 @@ Map<String, dynamic> calculateProductStatistics(List<dynamic> productsData) {
   }
 
   // Calculate profit percentage
-  double profitPercentage = double.parse(((totalProfit / totalCostPrice) * 100).toStringAsFixed(1));
+  double profitPercentage = double.parse((((totalSellingPrice-totalCostPrice) / totalCostPrice) * 100).toStringAsFixed(1));
 
   // Calculate total investment
   double totalInvestment = totalCostPrice;
@@ -97,6 +99,46 @@ String calculateTimeDifference(String postDateString) {
     return '${difference.inDays ~/ 365} ${difference.inDays ~/ 365 == 1 ? 'year' : 'years'} ${years} ${years == 1 ? 'day' : 'days'} ago';
   }
 }
+
+Map<String, double> calculateTotalSalesAndInvestment(List<dynamic> orders) {
+  double totalSales = 0;
+  double totalInvestment = 0;
+  double totalProfit = 0;
+
+  // Iterate through each order
+  for (var order in orders) {
+    // Check if the paymentStatus is "Completed"
+    if (order['paymentStatus'] == "Completed") {
+      // Access the 'products' object within the order
+      var product = order['products'];
+
+      // Access the 'bp' (buying price) and 'quantity' fields within the product
+      double buyingPrice = product['bp'].toDouble();
+      double quantity = product['quantity'].toDouble();
+
+      // Calculate the total investment for this product (bp * quantity) and add it to the total investment
+      totalInvestment += buyingPrice * quantity;
+      totalSales += product['price'] * quantity;
+
+    }
+  }
+
+      totalProfit += totalSales - totalInvestment;
+  // Calculate profit percentage
+  double profitPercentage = (totalProfit / totalInvestment) * 100;
+  final data = {
+    'totalSales': totalSales,
+    'totalInvestment': totalInvestment,
+    'profit': totalProfit,
+    'profitPercentage': profitPercentage,
+  };
+  // Return the total sales, total investment, profit, and profit percentage as a map
+  return data;
+}
+
+
+
+
 
 
 

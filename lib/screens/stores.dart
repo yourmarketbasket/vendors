@@ -238,7 +238,7 @@ class _StoresScreenState extends State<StoresScreen> {
                                       crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
                                         Text("Remaining: ${formatNumber(storeProducts[index]['quantity'])}", style: TextStyle(fontSize: 8, color: Colors.white)),
-                                        Text("Posted ${calculateTimeDifference(storeProducts[index]['createdAt'])}", style: TextStyle(fontSize: 8, color: AppTheme.backgroundColor))
+                                        Text("Posted ${calculateTimeDifference(storeProducts[index]['createdAt'])}", style: TextStyle(fontSize: 8, color: AppTheme.blueAccent))
                                       ],
                                     )
                                   ],
@@ -400,7 +400,7 @@ class _StoresScreenState extends State<StoresScreen> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       Text("${storeOrders[index]['paymentStatus']!.toString()}", style: TextStyle(color: storeOrders[index]['paymentStatus']=="Completed" ? AppTheme.mainColor: AppTheme.dangerColor, fontSize: 10)),
-                                      storeOrders[index]['paymentStatus']=="Completed" ? Text("Code: ${storeOrders[index]['transactionID']}", style: TextStyle(color: Colors.white, fontSize: 10)): Container(),
+                                      storeOrders[index]['paymentStatus']=="Completed" ? Text("TID: ${storeOrders[index]['transactionID']}", style: TextStyle(color: Colors.white, fontSize: 10)): Container(),
                                       Row(
                                         children: [
                                           Text("TC: ${formatNumber(storeOrders[index]['products']['totalCost'])}", style: TextStyle(color: Colors.white, fontSize: 10)),
@@ -627,6 +627,65 @@ class _StoresScreenState extends State<StoresScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
+                          Column(
+                            children: [
+                              createShadowedContainer(
+                                height: 0.15*dh, 
+                                width: 0.13*dw,  
+                                color: Colors.teal, 
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                   Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.computer, color: Colors.white,),
+                                        Text('SALES', style: TextStyle(color: Colors.white),),
+                                        Text(
+                                          storeOrders != null
+                                            ? NumberFormat("#,###").format(storeOrders.isNotEmpty
+                                                ? calculateTotalSalesAndInvestment(storeOrders)['totalSales']?.toDouble()
+                                                : 0) + "/-"
+                                            : "0",
+                                          style: TextStyle(color: Colors.white, fontSize: 30),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )
+                              ),
+                              SizedBox(height: 20,),
+                              createShadowedContainer(
+                                height: 0.15*dh, 
+                                width: 0.13*dw,  
+                                color: Colors.deepPurple, 
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                   Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.wallet_sharp, color: Colors.white,),
+                                        Text('PROFIT', style: TextStyle(color: Colors.white),),
+                                        Text(
+                                          storeOrders != null
+                                            ? NumberFormat("#,###").format(storeOrders.isNotEmpty
+                                                ? (calculateTotalSalesAndInvestment(storeOrders)['profit'])?.toDouble()
+                                                : 0) + "/-"
+                                            : "0",
+                                          style: TextStyle(color: Colors.white, fontSize: 30),
+                                        ),
+
+                                      ],
+                                    ),
+                                  ],
+                                )
+                              ),
+                            ],
+                          ),
+                          SizedBox(width: 30,),
                           Container(
                             height: 0.35*dh, 
                             width: 0.3*dw, 
