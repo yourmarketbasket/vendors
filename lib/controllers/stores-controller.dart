@@ -41,6 +41,7 @@ class StoresController extends GetxController{
       selectedStore.value = store;
       final storeid = jsonDecode(selectedStore.value)['_id'];
       await getStoreProducts(storeid);
+      await getStoreOrders(storeid);
     }
 
   }

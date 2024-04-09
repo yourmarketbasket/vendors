@@ -70,44 +70,48 @@ class _StoresScreenState extends State<StoresScreen> {
           padding: const EdgeInsets.only(left:20.0, right: 20, top: 20),
           child: Column(
             children: [
+              
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   Row(
-                      children: [
-                        Column(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Row(
                           children: [
-                            Row(
+                            Column(
                               children: [
-                                Text(
-                                  store != null ? store['storename'].toUpperCase() : "No Store Selected",
-                                  style: TextStyle(
-                                    color: store != null ? AppTheme.mainColor : AppTheme.dangerColor,
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      store != null ? store['storename'].toUpperCase() : "No Store Selected",
+                                      style: TextStyle(
+                                        color: store != null ? AppTheme.mainColor : AppTheme.dangerColor,
+                                      ),
+                                    ),
+                                    Icon(
+                                      store != null ? Icons.signal_cellular_alt : Icons.signal_cellular_connected_no_internet_0_bar,
+                                      color: store != null ? AppTheme.mainColor : AppTheme.dangerColor,
+                                      size: 20,
+                                    ),
+                                  ],
                                 ),
-                                Icon(
-                                  store != null ? Icons.signal_cellular_alt : Icons.signal_cellular_connected_no_internet_0_bar,
-                                  color: store != null ? AppTheme.mainColor : AppTheme.dangerColor,
-                                  size: 20,
+                                Text(
+                                  store != null ? store['storetype'].toUpperCase() : "",
+                                  style: TextStyle(color: const Color.fromARGB(255, 147, 144, 144), fontSize: 10),
                                 ),
                               ],
                             ),
-                            Text(
-                              store != null ? store['storetype'].toUpperCase() : "",
-                              style: TextStyle(color: const Color.fromARGB(255, 147, 144, 144), fontSize: 10),
-                            ),
+                            ButtonContainer(icon: Icons.refresh_rounded, onPressed: (){
+                              storesController.getSelectedStore();
+                            }),                           
+                          
                           ],
-                        ),
-                        ButtonContainer(icon: Icons.refresh_rounded, onPressed: (){}),                           
-                      
-                      ],
-                    )
-                        
-                ],
-              ),
-              
-              Row(
-                children: [
+                        )
+                            
+                    ],
+                  ),
+                  SizedBox(width: 30,),
                   Container(
                     width: 0.6*dw,
                     height: 35,
