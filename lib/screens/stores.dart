@@ -113,7 +113,7 @@ class _StoresScreenState extends State<StoresScreen> {
                   ),
                   SizedBox(width: 30,),
                   Container(
-                    width: 0.6*dw,
+                    width: 0.5*dw,
                     height: 35,
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
@@ -276,7 +276,7 @@ class _StoresScreenState extends State<StoresScreen> {
                                           IconButton(
                                             icon: Icon(Icons.edit_document, color: Colors.white,),
                                             onPressed: () {
-                                              // Handle edit action
+                                              editProductDetailsDialog(context, storeProducts[index], dh, dw);
                                             },
                                           ),
                                           IconButton(

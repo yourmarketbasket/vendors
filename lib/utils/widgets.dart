@@ -8,8 +8,10 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart';
 import 'package:nisoko_vendors/controllers/landing-controller.dart';
 import 'package:nisoko_vendors/controllers/stores-controller.dart';
+import 'package:nisoko_vendors/utils/chips-input-field.dart';
 import 'package:nisoko_vendors/utils/colors.dart';
 import 'package:nisoko_vendors/utils/functions.dart';
+import 'package:nisoko_vendors/utils/image-cycle-widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SizedBox sideBar(BuildContext context){
@@ -312,6 +314,165 @@ void openSelectStoreDialog(BuildContext context) async {
   );
 }
 
+
+void editProductDetailsDialog(BuildContext context, Map<String, dynamic> productData, double height, double width) {
+  TextEditingController nameController = TextEditingController(text: productData['name']);
+  TextEditingController descriptionController = TextEditingController(text: productData['description']);
+  TextEditingController sp = TextEditingController(text: productData['sp'].toString());
+  TextEditingController bp = TextEditingController(text: productData['bp'].toString());
+  TextEditingController discount = TextEditingController(text: productData['discount'].toString());
+  TextEditingController quantity = TextEditingController(text: productData['quantity'].toString());
+
+
+
+
+  List<String> initialFeatures = (productData['features'] as List<dynamic>).cast<String>();
+  List<String> avatarImages = (productData['avatar'] as List<dynamic>).cast<String>();
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      List<String> updatedFeatures = initialFeatures; // Initialize updated features list
+
+      return Center(
+        child: Container(
+          height: height * 0.75,
+          width: width * 0.3,
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Edit Product: ${productData['name']}',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    // Display the avatar images
+                    ImageCycleWidget(
+                      imageHeight: 0.25*height,
+                      imageWidth: 0.9*width,
+                      imageUrls: avatarImages,
+                      interval: Duration(seconds: 2),
+                      autoplay: true,
+                      onImageChanged: (index) {
+                        // Update currentImageIndex
+                      },
+                    ),
+                    SizedBox(height: 16.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: bp,
+                            decoration: InputDecoration(
+                              labelText: 'BP',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8), // Add spacing between fields
+                        Expanded(
+                          child: TextFormField(
+                            controller: sp,
+                            decoration: InputDecoration(
+                              labelText: 'SP',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                        
+                      ],
+                    ),
+                    SizedBox(height: 8,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [ // Add spacing between fields
+                        Expanded( // Adjust the width as needed
+                          child: TextFormField(
+                            controller: quantity,
+                            decoration: InputDecoration(
+                              labelText: 'Quantity',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 8), // Add spacing between fields
+                        Expanded(// Adjust the width as needed
+                          child: TextFormField(
+                            controller: discount,
+                            decoration: InputDecoration(
+                              labelText: 'Discount',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: descriptionController,
+                      maxLines: 3,
+                      decoration: InputDecoration(
+                        labelText: 'Product Description',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    Text(
+                      'Product Features:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    ChipInputField(
+                      initialChips: initialFeatures,
+                      labelText: "Add Feature",
+                      onChipsChanged: (chips) {
+                        updatedFeatures = chips; // Update the updated features list
+                      },
+                    ),
+                    SizedBox(height: 16.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        SizedBox(width: 8.0),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Save
+                            String name = nameController.text;
+                            String description = descriptionController.text;
+                            // Call the callback function to pass the updated features back to the parent widget
+                            Navigator.pop(context, updatedFeatures);
+                          },
+                          child: Text('Save'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
 
 Future<void> showProductDetailsDialog(BuildContext context, Map<String, dynamic> productData, double height, double width) async {
   final RxInt sliderIndex = Get.put(StoresController().sliderIndex);

@@ -5,12 +5,14 @@ import 'package:get/get.dart';
 import 'package:nisoko_vendors/controllers/landing-controller.dart';
 import 'package:nisoko_vendors/controllers/stores-controller.dart';
 import 'package:nisoko_vendors/screens/account.dart';
+import 'package:nisoko_vendors/screens/login.dart';
 import 'package:nisoko_vendors/screens/notifications.dart';
 import 'package:nisoko_vendors/screens/stores.dart';
 import 'package:nisoko_vendors/screens/support.dart';
 import 'package:nisoko_vendors/utils/colors.dart';
 import 'package:nisoko_vendors/utils/sidebar.dart';
 import 'package:nisoko_vendors/utils/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({Key? key}) : super(key: key); // Add 'required' modifier
@@ -43,6 +45,21 @@ class _LandingScreenState extends State<LandingScreen> {
 
   void closeDrawer() {
     Navigator.of(context).pop();
+  }
+
+  void logout() async {
+    // Delete user ID from SharedPreferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userid');
+
+    await prefs.remove("selectedStore");
+
+    storesController.selectedStore.value = "";
+
+    // Navigate to the login screen
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
   }
 
 
@@ -140,6 +157,12 @@ class _LandingScreenState extends State<LandingScreen> {
         overlayColor: Colors.transparent,
         animatedIcon: AnimatedIcons.menu_close,
         children: [
+          SpeedDialChild(
+            shape: CircleBorder(),
+            child: Icon(Icons.logout_outlined),
+            label: "Logout",
+            onTap: logout
+          ),
           SpeedDialChild(
             shape: CircleBorder(),
             child: Icon(Icons.menu_rounded),
