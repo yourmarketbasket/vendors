@@ -441,6 +441,18 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                       },
                     ),
                     SizedBox(height: 16.0),
+                    Divider(),
+                    OutlinedButton(
+                      onPressed: (){}, 
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.camera_alt),
+                          Text("UPLOAD IMAGES"),
+                        ],
+                      )
+                    ),
+                    Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -448,7 +460,17 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                           onPressed: () {
                             Navigator.pop(context);
                           },
-                          child: Text('Cancel'),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.close_outlined),
+                              Text('Cancel'),
+                            ],
+                          ),
                         ),
                         SizedBox(width: 8.0),
                         ElevatedButton(
@@ -459,10 +481,21 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                             // Call the callback function to pass the updated features back to the parent widget
                             Navigator.pop(context, updatedFeatures);
                           },
-                          child: Text('Save'),
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.save),
+                              Text('SAVE'),
+                            ],
+                          ),
                         ),
                       ],
                     ),
+
                   ],
                 ),
               ),
