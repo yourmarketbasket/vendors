@@ -12,6 +12,7 @@ import 'package:nisoko_vendors/utils/chips-input-field.dart';
 import 'package:nisoko_vendors/utils/colors.dart';
 import 'package:nisoko_vendors/utils/functions.dart';
 import 'package:nisoko_vendors/utils/image-cycle-widget.dart';
+import 'package:nisoko_vendors/utils/images-chip-widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SizedBox sideBar(BuildContext context){
@@ -320,7 +321,7 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
   TextEditingController descriptionController = TextEditingController(text: productData['description']);
   TextEditingController sp = TextEditingController(text: productData['sp'].toString());
   TextEditingController bp = TextEditingController(text: productData['bp'].toString());
-  TextEditingController discount = TextEditingController(text: productData['discount'].toString());
+  TextEditingController discount = TextEditingController(text: productData['discount'] != null ? productData['discount'].toString() : "");
   TextEditingController quantity = TextEditingController(text: productData['quantity'].toString());
 
 
@@ -442,6 +443,18 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                     ),
                     SizedBox(height: 16.0),
                     Divider(),
+                    SizedBox(width: 8), // Add spacing between fields
+    Container(
+      height: 0.2*height,
+      width: 0.75*width,
+      child: ImagesChipInputField(
+        initialImages: avatarImages, // Pass initial images list if needed
+        labelText: "Upload Images",
+        onImagesChanged: (images) {
+          // Update images list
+        },
+      ),
+    ),
                     OutlinedButton(
                       onPressed: (){}, 
                       child: Row(
