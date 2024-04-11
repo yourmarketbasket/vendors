@@ -48,6 +48,8 @@ dependencies:
   windows_notification: ^1.1.0
   image_picker: ^1.0.7
   crop_your_image: ^1.0.2
+  firebase_core: ^2.27.0
+  firebase_storage: ^11.6.9
 
 dev_dependencies:
   flutter_test:

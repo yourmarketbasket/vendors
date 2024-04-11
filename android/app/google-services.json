@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "851296747336",
+    "firebase_url": "https://market-e62c9-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "market-e62c9",
+    "storage_bucket": "market-e62c9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851296747336:android:91b87dceb908793307bd7d",
+        "android_client_info": {
+          "package_name": "com.example.nisoko_vendors"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851296747336-fcamhj3p2stnpdl20shtgklr2m6f26iq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSswUlAxd1Gqp5x1Egf8_mor9Q99rwlOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851296747336-fcamhj3p2stnpdl20shtgklr2m6f26iq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

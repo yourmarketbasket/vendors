@@ -203,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: AppTheme.mainColor,
+                                  backgroundColor: AppTheme.mainColor,
                                   elevation: 0, // Remove button elevation
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5),
@@ -280,7 +280,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: ElevatedButton(
                                 onPressed: () {},
                                 style: ElevatedButton.styleFrom(
-                                  primary: AppTheme.dangerColor,
+                                  backgroundColor: AppTheme.dangerColor,
                                   elevation: 0, // Remove button elevation
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5),

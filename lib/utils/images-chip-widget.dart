@@ -1,17 +1,17 @@
 import 'dart:io';
-
 import 'package:crop_your_image/crop_your_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'dart:typed_data';
 
 class ImagesChipInputField extends StatefulWidget {
   final List<String> initialImages;
-  final ValueChanged<List<String>> onImagesChanged;
+  final ValueChanged<List<File>> onImagesChanged;
   final String labelText;
   final Color chipColor;
   final Color deleteIconColor;
+  final ValueGetter<List<String>>? getImages;
+  late List<File> updatedImages = [];
 
   ImagesChipInputField({
     required this.initialImages,
@@ -19,6 +19,7 @@ class ImagesChipInputField extends StatefulWidget {
     required this.labelText,
     this.chipColor = Colors.blue,
     this.deleteIconColor = Colors.grey,
+    this.getImages,
   });
 
   @override
@@ -74,7 +75,7 @@ class _ImagesChipInputFieldState extends State<ImagesChipInputField> {
                               onTap: () {
                                 setState(() {
                                   _images.remove(image);
-                                  widget.onImagesChanged(_images);
+                                  // widget.onImagesChanged(_images);
                                 });
                               },
                               child: CircleAvatar(
@@ -99,7 +100,13 @@ class _ImagesChipInputFieldState extends State<ImagesChipInputField> {
           SizedBox(height: 8.0),
           ElevatedButton(
             onPressed: _uploadImages,
-            child: Text('Upload Images'),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Icon(Icons.camera_alt),
+                Text(widget.labelText),
+              ],
+            ),
           ),
         ],
       ),
@@ -108,13 +115,11 @@ class _ImagesChipInputFieldState extends State<ImagesChipInputField> {
 
   DecorationImage _getImageProvider(String imagePath) {
     if (imagePath.startsWith('http') || imagePath.startsWith('https')) {
-      // If the image path is a URL, use NetworkImage
       return DecorationImage(
         image: NetworkImage(imagePath),
         fit: BoxFit.fill,
       );
     } else {
-      // If the image path is a local file path, use FileImage
       return DecorationImage(
         image: FileImage(File(imagePath)),
         fit: BoxFit.fill,
@@ -132,10 +137,13 @@ class _ImagesChipInputFieldState extends State<ImagesChipInputField> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Selected Image'),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            title: Text('Crop Product Image'),
             content: Container(
-              height: 300,
-              width: 300,
+              height: 400,
+              width: 400,
               child: Crop(
                 controller: _cropController,
                 aspectRatio: 4 / 3,
@@ -157,7 +165,13 @@ class _ImagesChipInputFieldState extends State<ImagesChipInputField> {
                   _cropController.crop();
                   Navigator.of(context).pop();
                 },
-                child: Text('Crop'),
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Icon(Icons.crop),
+                    Text('Crop'),
+                  ],
+                ),
               ),
             ],
           );
@@ -167,19 +181,20 @@ class _ImagesChipInputFieldState extends State<ImagesChipInputField> {
   }
 
   void _handleCroppedImage(Uint8List croppedImage) {
-    // Generate a unique name for the image
     String imageName = 'image_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-    // Save the cropped image to local storage
     File('$imageName').writeAsBytes(croppedImage).then((File savedImage) {
-      // Add the image path to the list of images
       setState(() {
         _images.add(savedImage.path);
-        widget.onImagesChanged(_images);
+        widget.updatedImages.add(savedImage);
+        widget.onImagesChanged(widget.updatedImages);
       });
     }).catchError((error) {
-      // Handle any errors that occur during image saving
       print('Error saving image: $error');
     });
+  }
+
+  List<File> getImages() {
+    return widget.updatedImages;
   }
 }

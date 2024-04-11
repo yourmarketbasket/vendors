@@ -1,14 +1,20 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:nisoko_vendors/controllers/landing-controller.dart';
 import 'package:nisoko_vendors/controllers/stores-controller.dart';
+import 'package:nisoko_vendors/firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:nisoko_vendors/screens/landing.dart';
 import 'package:nisoko_vendors/screens/login.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
   runApp(const EntryPage());
 }
 

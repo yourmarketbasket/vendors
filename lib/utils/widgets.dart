@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -267,7 +268,7 @@ void openSelectStoreDialog(BuildContext context) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String selectedStoreJson = prefs.getString('selectedStore') ?? '';
   Map<String, dynamic>? selectedStore = selectedStoreJson.isNotEmpty ? jsonDecode(selectedStoreJson) : null;
-  Map<String, dynamic> stores = storesController.Stores.value; // Replace with your list of stores
+  Map<String, dynamic> stores = storesController.Stores.value; 
 
   showDialog(
     context: context,    
@@ -329,6 +330,8 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
 
   List<String> initialFeatures = (productData['features'] as List<dynamic>).cast<String>();
   List<String> avatarImages = (productData['avatar'] as List<dynamic>).cast<String>();
+  List<File> updatedAvatarImages = [];
+
 
   showDialog(
     context: context,
@@ -441,29 +444,20 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                         updatedFeatures = chips; // Update the updated features list
                       },
                     ),
-                    SizedBox(height: 16.0),
-                    Divider(),
-                    SizedBox(width: 8), // Add spacing between fields
-    Container(
-      height: 0.2*height,
-      width: 0.75*width,
-      child: ImagesChipInputField(
-        initialImages: avatarImages, // Pass initial images list if needed
-        labelText: "Upload Images",
-        onImagesChanged: (images) {
-          // Update images list
-        },
-      ),
-    ),
-                    OutlinedButton(
-                      onPressed: (){}, 
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.camera_alt),
-                          Text("UPLOAD IMAGES"),
-                        ],
-                      )
+                    SizedBox(width: 8),
+                    Divider(), // Add spacing between fields
+                    Container(
+                      height: 0.15*height,
+                      width: 0.75*width,
+                      child: ImagesChipInputField(
+                        initialImages: avatarImages, // Pass initial images list if needed
+                        labelText: "Upload Images",
+                        onImagesChanged: (images) {
+                          updatedAvatarImages = images;
+                          // updatedAvatarImages = images;
+                          // Update images list
+                        },
+                      ),
                     ),
                     Divider(),
                     Row(
@@ -487,12 +481,13 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                         ),
                         SizedBox(width: 8.0),
                         ElevatedButton(
-                          onPressed: () {
-                            // Save
-                            String name = nameController.text;
-                            String description = descriptionController.text;
-                            // Call the callback function to pass the updated features back to the parent widget
-                            Navigator.pop(context, updatedFeatures);
+                          onPressed: () async {
+                            final urls = await uploadFilesAndUpdateUrls(
+                              updatedAvatarImages, (p0) => null
+                            );
+                            if(urls!=null){
+                              print(urls);
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(

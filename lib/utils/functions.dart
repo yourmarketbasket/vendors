@@ -1,12 +1,52 @@
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:nisoko_vendors/screens/login.dart';
 import 'package:nisoko_vendors/utils/colors.dart';
 import 'package:nisoko_vendors/utils/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fl_chart/fl_chart.dart';
-
 import 'dart:math';
+import 'dart:io';
+
+Future<List<String>> uploadFilesAndUpdateUrls(List<File> files, Function(double) onProgress) async {
+  final storage = FirebaseStorage.instance;
+  final storageRef = storage.ref();
+  final directory = storageRef.child("products/");
+
+  // List to store download URLs
+  List<String> urls = [];
+
+  try {
+    // Upload files concurrently
+    await Future.forEach(files, (File file) async {
+      String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+      final imageToUpload = directory.child("product_${fileName}.jpg");
+
+      // Upload file to Firebase Storage
+      UploadTask task = imageToUpload.putFile(File(file.path));
+
+      // Wait for the upload to complete
+      await task;
+
+      // Get the download URL of the uploaded file
+      String downloadUrl = await imageToUpload.getDownloadURL();
+
+      // Add the download URL to the list of URLs
+      urls.add(downloadUrl);
+
+      // Report progress
+      double progress = (urls.length / files.length) * 100;
+      onProgress(progress);
+    });
+
+    return urls;
+  } catch (error) {
+    // Handle any errors that occur during the upload process
+    print('Error uploading files: $error');
+    return [];
+  }
+}
 
 logout(BuildContext context) async {
             // Delete user ID from SharedPreferences
