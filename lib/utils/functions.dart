@@ -176,7 +176,35 @@ Map<String, double> calculateTotalSalesAndInvestment(List<dynamic> orders) {
   return data;
 }
 
-
+void showFeedback(BuildContext context, String message, bool success) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Message'),
+        content: Row(
+          children: <Widget>[
+            success
+                ? Icon(Icons.check_circle, color: Colors.green)
+                : Icon(Icons.error, color: Colors.red),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(message),
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
+}
 
 
 

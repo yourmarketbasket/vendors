@@ -45,6 +45,32 @@ class StoresController extends GetxController{
     }
 
   }
+Future<Map<String, dynamic>> editStoreProductDetails(Map<String, dynamic> data) async {
+  final String serverLink = '${Constants.serverLink}/api/products/editStoreProductDetails';
+
+  try {
+    final http.Response response = await http.post(
+      Uri.parse(serverLink),
+      body: jsonEncode(data),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    final statusCode = response.statusCode;
+    final responseData = jsonDecode(response.body);
+
+    if (statusCode == 200) {
+      if(responseData['success']){
+        return responseData;
+      }else{
+        throw Exception('Error one: ${responseData['message']}');
+      }
+    } else {
+      throw Exception('Operation Failed: ${responseData['message']}');
+    }
+  } catch (error) {
+    return {'message': 'Error two: ${error}', 'success': false};
+  }
+}
 
  Future<void> getStoreProducts(String storeid) async {
   if (storeid != null) {

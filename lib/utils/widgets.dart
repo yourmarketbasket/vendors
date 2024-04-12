@@ -324,6 +324,7 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
   TextEditingController bp = TextEditingController(text: productData['bp'].toString());
   TextEditingController discount = TextEditingController(text: productData['discount'] != null ? productData['discount'].toString() : "");
   TextEditingController quantity = TextEditingController(text: productData['quantity'].toString());
+  final _storesController = Get.put(StoresController());
 
 
 
@@ -378,6 +379,7 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                       children: [
                         Expanded(
                           child: TextFormField(
+                            keyboardType: TextInputType.number,
                             controller: bp,
                             decoration: InputDecoration(
                               labelText: 'BP',
@@ -388,6 +390,7 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                         SizedBox(width: 8), // Add spacing between fields
                         Expanded(
                           child: TextFormField(
+                            keyboardType: TextInputType.number,
                             controller: sp,
                             decoration: InputDecoration(
                               labelText: 'SP',
@@ -404,6 +407,7 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                       children: [ // Add spacing between fields
                         Expanded( // Adjust the width as needed
                           child: TextFormField(
+                            keyboardType: TextInputType.number,
                             controller: quantity,
                             decoration: InputDecoration(
                               labelText: 'Quantity',
@@ -414,6 +418,7 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                         SizedBox(width: 8), // Add spacing between fields
                         Expanded(// Adjust the width as needed
                           child: TextFormField(
+                            keyboardType: TextInputType.number,
                             controller: discount,
                             decoration: InputDecoration(
                               labelText: 'Discount',
@@ -425,6 +430,7 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                     ),
                     SizedBox(height: 16.0),
                     TextFormField(
+                      keyboardType: TextInputType.text,
                       controller: descriptionController,
                       maxLines: 3,
                       decoration: InputDecoration(
@@ -454,8 +460,6 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                         labelText: "Upload Images",
                         onImagesChanged: (images) {
                           updatedAvatarImages = images;
-                          // updatedAvatarImages = images;
-                          // Update images list
                         },
                       ),
                     ),
@@ -485,10 +489,31 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                             final urls = await uploadFilesAndUpdateUrls(
                               updatedAvatarImages, (p0) => null
                             );
-                            if(urls!=null){
-                              print(urls);
+                            if(urls != null) {
+                              List<String> stringAvatarImages = urls.map((url) => url.toString()).toList();
+                              avatarImages.addAll(stringAvatarImages);
+                              Map<String, dynamic> data = {
+                                "id":productData['_id'],
+                                "bp": bp.text.isNotEmpty ? bp.text : null,
+                                "sp": sp.text.isNotEmpty ? sp.text : null,
+                                "quantity": quantity.text.isNotEmpty ? quantity.text : null,
+                                "discount": discount.text.isNotEmpty ? discount.text : null,
+                                "features": updatedFeatures.isNotEmpty ? updatedFeatures : null,
+                                "description": descriptionController.text.isNotEmpty ? descriptionController.text : null,
+                                "avatar": avatarImages.isNotEmpty ? avatarImages : null,
+                              };
+                              // print(data);
+
+                              // send to server
+                              final response = await _storesController.editStoreProductDetails(data);
+                              if(response['success']){
+                                showFeedback(context, response['message'], response['success']);
+                              } else {
+                                showFeedback(context, response['message'], response['success']);
+                              }
                             }
                           },
+
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0),
