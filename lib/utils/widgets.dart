@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'dart:math';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +14,8 @@ import 'package:nisoko_vendors/utils/colors.dart';
 import 'package:nisoko_vendors/utils/functions.dart';
 import 'package:nisoko_vendors/utils/image-cycle-widget.dart';
 import 'package:nisoko_vendors/utils/images-chip-widget.dart';
+import 'package:map/map.dart';
+import 'package:latlng/latlng.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 SizedBox sideBar(BuildContext context){
@@ -316,6 +318,134 @@ void openSelectStoreDialog(BuildContext context) async {
   );
 }
 
+// view order details including the map using modal
+
+void showOrderDetailsDialog(BuildContext context, Map<String, dynamic> order) async {
+  final storesController = Get.put(StoresController());
+  WidgetsBinding.instance!.addPostFrameCallback((_) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          contentPadding: EdgeInsets.zero,
+          content: SingleChildScrollView(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GetBuilder<StoresController>(
+                  builder: (storesController) => Container(
+                    height: 430,
+                    width: 500,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(5),
+                      child: MapLayout(
+                        controller: MapController(
+                          location: LatLng(Angle.degree(order['destination']['latitude']), Angle.degree(order['destination']['longitude'])),
+                          projection: EPSG4326(),
+                          zoom: storesController.zoom.value,
+                        ),
+                        builder: (context, transformer) {
+                          final markerPositions = [
+                            LatLng(Angle.degree(order['destination']['latitude']), Angle.degree(order['destination']['longitude'])),
+                            // Add more marker locations as needed
+                          ];
+                      
+                          final markerWidgets = markerPositions.map((markerPosition) {
+                            final markerScreenPosition = transformer.toOffset(markerPosition);
+                            return _buildMarkerWidget(markerScreenPosition, Colors.red);
+                          });
+                      
+                          return Stack(
+                            children: [
+                              TileLayer(
+                                builder: (context, x, y, z) {
+                                  final tilesInZoom = pow(2.0, z).floor();
+                          
+                                  while (x < 0) {
+                                    x += tilesInZoom;
+                                  }
+                                  while (y < 0) {
+                                    y += tilesInZoom;
+                                  }
+                          
+                                  x %= tilesInZoom;
+                                  y %= tilesInZoom;
+                          
+                                  String url = 'https://www.google.com/maps/vt/pb=!1m4!1m3!1i$z!2i$x!3i$y!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425';
+                          
+                                  return CachedNetworkImage(
+                                    imageUrl: url,
+                                    fit: BoxFit.cover,
+                                  );
+                                },
+                              ),
+                              ...markerWidgets,
+                              // add the zoom buttons row at the very bottom of the map using positioned widgets
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.zoom_in),
+                                      onPressed: () {
+                                        storesController.zoom.value++;
+                                        storesController.update();
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(Icons.zoom_out),
+                                      onPressed: () {
+                                        storesController.zoom.value--;
+                                        storesController.update();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('Buyer Name: ${order['buyername']}'),
+                      Text('Amount: ${order['amount']}'),
+                      Text('Payment Status: ${order['paymentStatus']}'),
+                      Text('Items: ${order['items']}'),
+                      Text('Delivery Fee: ${order['deliveryfee']}'),
+                      Text('Country Code: ${order['countryCode']}'),
+                      Row(
+                        children: [
+                          Text("${order['products']['quantity']}"),
+                          SizedBox(width: 10),
+                          Text("${order['products']['productname']}"),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  });
+}
+
 
 void editProductDetailsDialog(BuildContext context, Map<String, dynamic> productData, double height, double width) {
   TextEditingController nameController = TextEditingController(text: productData['name']);
@@ -325,10 +455,7 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
   TextEditingController discount = TextEditingController(text: productData['discount'] != null ? productData['discount'].toString() : "");
   TextEditingController quantity = TextEditingController(text: productData['quantity'].toString());
   final _storesController = Get.put(StoresController());
-
-
-
-
+  
   List<String> initialFeatures = (productData['features'] as List<dynamic>).cast<String>();
   List<String> avatarImages = (productData['avatar'] as List<dynamic>).cast<String>();
   List<File> updatedAvatarImages = [];
@@ -507,6 +634,8 @@ void editProductDetailsDialog(BuildContext context, Map<String, dynamic> product
                               // send to server
                               final response = await _storesController.editStoreProductDetails(data);
                               if(response['success']){
+                                _storesController.getStoreProducts(productData['storeid']);
+                                _storesController.getStoreOrders(productData['storeid']);
                                 showFeedback(context, response['message'], response['success']);
                               } else {
                                 showFeedback(context, response['message'], response['success']);
@@ -891,3 +1020,28 @@ mainWindow(){
     ),
   );
 }
+
+Widget _buildMarkerWidget(Offset pos, Color color,
+      [IconData icon = Icons.location_on_outlined]) {
+    return Positioned(
+      left: pos.dx - 50,
+      top: pos.dy - 50,
+      width: 100,
+      height: 100,
+      child: GestureDetector(
+        child: Column(
+          children: [
+            Text("Delivery Address", style: TextStyle(fontSize: 10, color: Colors.pink, fontWeight: FontWeight.bold),),
+            Icon(
+              icon,
+              color: Colors.pink,
+              size: 30,
+            ),
+          ],
+        ),
+        onTap: () {
+          print(pos);
+        },
+      ),
+    );
+  }

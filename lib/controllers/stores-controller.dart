@@ -2,6 +2,7 @@ import "dart:convert";
 
 import "package:flutter/material.dart";
 import "package:get/get.dart";
+import "package:get/get_rx/get_rx.dart";
 import "package:nisoko_vendors/utils/constants.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import 'package:http/http.dart' as http;
@@ -10,11 +11,13 @@ class StoresController extends GetxController{
   RxString selectedStore = "".obs;
   RxString storeproducts = "".obs;
   RxString storeorders = "".obs;
+  RxDouble  zoom = 15.0.obs;
 
   RxMap<String, dynamic> product = Map<String, dynamic>().obs;
   RxInt sliderIndex = 0.obs;
 
   RxInt currentPage = 0.obs;
+
 
   void getStores() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -106,6 +109,34 @@ Future<Map<String, dynamic>> editStoreProductDetails(Map<String, dynamic> data) 
       storeproducts.value = ""; 
       await getStoreOrders(storeid);
       // or set to any default value as needed
+    }
+  }
+}
+// create a function to remove or delete a product
+Future<void> deleteProduct(String productId) async {
+  if (productId != null) {
+    final String serverLink = '${Constants.serverLink}/api/products/deleteProduct/${productId}';
+    try {
+      final http.Response response = await http.delete(
+        Uri.parse(serverLink),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      final statusCode = response.statusCode;
+      final responseData = jsonDecode(response.body);
+
+      if (statusCode == 200) {
+        if (responseData['success']) {
+          // Product deleted successfully
+          // Perform any additional actions if needed
+        } else {
+          throw Exception('Error: ${responseData['message']}');
+        }
+      } else {
+        throw Exception('Operation Failed: ${responseData['message']}');
+      }
+    } catch (error) {
+      throw Exception('Error: ${error}');
     }
   }
 }

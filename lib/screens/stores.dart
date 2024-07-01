@@ -8,9 +8,11 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:nisoko_vendors/controllers/landing-controller.dart';
 import 'package:nisoko_vendors/controllers/stores-controller.dart';
 import 'package:nisoko_vendors/utils/colors.dart';
+import 'package:nisoko_vendors/utils/constants.dart';
 import 'package:nisoko_vendors/utils/functions.dart';
 import 'package:nisoko_vendors/utils/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class StoresScreen extends StatefulWidget {
   const StoresScreen({super.key});
@@ -20,6 +22,7 @@ class StoresScreen extends StatefulWidget {
 }
 
 class _StoresScreenState extends State<StoresScreen> {
+  late IO.Socket socket;
   List<String> _selectedItems = [];
   List<String> _selectedOrderItems = [];
 
@@ -33,11 +36,25 @@ class _StoresScreenState extends State<StoresScreen> {
   FocusNode allProductsFocusNode = FocusNode();
   FocusNode ordersFocusNode = FocusNode();
 
+  
+
 
   @override
   void initState() {
     super.initState();
-    
+    connect();    
+  }
+  
+  void connect(){
+    socket = IO.io(Constants.serverLink, <String, dynamic>{
+      'transports': ['websocket'],
+    });
+
+    socket.on('addproductevent', (productId) {
+      // Update the storeproducts list
+      storesController.getSelectedStore();
+    });
+  
   }
   @override
   Widget build(BuildContext context) {
@@ -447,7 +464,7 @@ class _StoresScreenState extends State<StoresScreen> {
                                         IconButton(
                                           icon: Icon(Icons.edit_document, color: Colors.white,),
                                           onPressed: () {
-                                            // Handle edit action
+                                            showOrderDetailsDialog(context, storeOrders[index]);
                                           },
                                         ),
                                         IconButton(
