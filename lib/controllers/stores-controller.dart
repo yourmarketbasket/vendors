@@ -11,7 +11,7 @@ class StoresController extends GetxController{
   RxString selectedStore = "".obs;
   RxString storeproducts = "".obs;
   RxString storeorders = "".obs;
-  RxDouble  zoom = 15.0.obs;
+  var  zoom = 15.0.obs;
 
   RxMap<String, dynamic> product = Map<String, dynamic>().obs;
   RxInt sliderIndex = 0.obs;

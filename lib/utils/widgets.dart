@@ -17,6 +17,7 @@ import 'package:nisoko_vendors/utils/images-chip-widget.dart';
 import 'package:map/map.dart';
 import 'package:latlng/latlng.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:webview_windows/webview_windows.dart';
 
 SizedBox sideBar(BuildContext context){
   LandingController landingController = Get.put(LandingController());
@@ -322,6 +323,15 @@ void openSelectStoreDialog(BuildContext context) async {
 
 void showOrderDetailsDialog(BuildContext context, Map<String, dynamic> order) async {
   final storesController = Get.put(StoresController());
+
+  // Initialize the WebViewController for Windows
+  final webViewController = WebviewController();
+  await webViewController.initialize();
+  webViewController.setBackgroundColor(Color(0x00000000));
+  webViewController.setPopupWindowPolicy(WebviewPopupWindowPolicy.deny);
+  webViewController.loadUrl(
+      'https://www.google.com/maps/search/?api=1&query=${order['destination']['latitude']},${order['destination']['longitude']}');
+
   WidgetsBinding.instance!.addPostFrameCallback((_) {
     showDialog(
       context: context,
@@ -335,87 +345,17 @@ void showOrderDetailsDialog(BuildContext context, Map<String, dynamic> order) as
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GetBuilder<StoresController>(
-                  builder: (storesController) => Container(
-                    height: 430,
-                    width: 500,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(5),
-                      child: MapLayout(
-                        controller: MapController(
-                          location: LatLng(Angle.degree(order['destination']['latitude']), Angle.degree(order['destination']['longitude'])),
-                          projection: EPSG4326(),
-                          zoom: storesController.zoom.value,
-                        ),
-                        builder: (context, transformer) {
-                          final markerPositions = [
-                            LatLng(Angle.degree(order['destination']['latitude']), Angle.degree(order['destination']['longitude'])),
-                            // Add more marker locations as needed
-                          ];
-                      
-                          final markerWidgets = markerPositions.map((markerPosition) {
-                            final markerScreenPosition = transformer.toOffset(markerPosition);
-                            return _buildMarkerWidget(markerScreenPosition, Colors.red);
-                          });
-                      
-                          return Stack(
-                            children: [
-                              TileLayer(
-                                builder: (context, x, y, z) {
-                                  final tilesInZoom = pow(2.0, z).floor();
-                          
-                                  while (x < 0) {
-                                    x += tilesInZoom;
-                                  }
-                                  while (y < 0) {
-                                    y += tilesInZoom;
-                                  }
-                          
-                                  x %= tilesInZoom;
-                                  y %= tilesInZoom;
-                          
-                                  String url = 'https://www.google.com/maps/vt/pb=!1m4!1m3!1i$z!2i$x!3i$y!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425';
-                          
-                                  return CachedNetworkImage(
-                                    imageUrl: url,
-                                    fit: BoxFit.cover,
-                                  );
-                                },
-                              ),
-                              ...markerWidgets,
-                              // add the zoom buttons row at the very bottom of the map using positioned widgets
-                              Positioned(
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.zoom_in),
-                                      onPressed: () {
-                                        storesController.zoom.value++;
-                                        storesController.update();
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.zoom_out),
-                                      onPressed: () {
-                                        storesController.zoom.value--;
-                                        storesController.update();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              
-                            ],
-                          );
-                        },
+                  builder: (storesController) => Flexible(
+                    child: Container(
+                      height: 600,
+                      width: 830,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Webview(webViewController),
                       ),
                     ),
                   ),
                 ),
-                
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -445,8 +385,6 @@ void showOrderDetailsDialog(BuildContext context, Map<String, dynamic> order) as
     );
   });
 }
-
-
 void editProductDetailsDialog(BuildContext context, Map<String, dynamic> productData, double height, double width) {
   TextEditingController nameController = TextEditingController(text: productData['name']);
   TextEditingController descriptionController = TextEditingController(text: productData['description']);
