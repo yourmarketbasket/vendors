@@ -143,7 +143,7 @@ Future<void> deleteProduct(String productId) async {
 Future<void> getStoreOrders(String storeid) async {
   if (storeid != null) {
     http.Response response = await http.get(
-      Uri.parse('${Constants.serverLink}/api/products/getStoreOrders/${storeid}'),
+      Uri.parse('${Constants.serverLink}/api/products/groupAllStoreOrders/${storeid}'),
       headers: {'Content-Type': 'application/json'},
     );
 
@@ -165,6 +165,7 @@ Future<void> getStoreOrders(String storeid) async {
 
       // Update the value in the controller
       storeorders.value = productsJson;
+      
     } else {
       // If no products found, clear the store products
       SharedPreferences prefs = await SharedPreferences.getInstance();

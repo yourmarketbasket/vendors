@@ -9,6 +9,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'dart:math';
 import 'dart:io';
 
+import 'package:webview_windows/webview_windows.dart';
+
 Future<List<String>> uploadFilesAndUpdateUrls(List<File> files, Function(double) onProgress) async {
   final storage = FirebaseStorage.instance;
   final storageRef = storage.ref();
@@ -61,6 +63,62 @@ logout(BuildContext context) async {
   );
  
 }
+
+void showOrderDeliveryMapDialog(BuildContext context, String mapUrl) async {
+  final webviewController = WebviewController();
+  await webviewController.initialize();
+  await webviewController.setBackgroundColor(Colors.transparent);
+  webviewController.loadUrl(mapUrl);
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Comprehensive Delivery Route Route")
+          ],
+        ),
+        contentPadding: EdgeInsets.zero,
+        content: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          height: MediaQuery.of(context).size.height * 0.8,
+          child: Webview(
+            webviewController,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Close'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+String generateGoogleMapsUrl(List<dynamic> origins, List<dynamic> destinations) {
+  // Convert origins to a string
+  String originString = origins
+      .map((origin) => '${origin['latitude']},${origin['longitude']}')
+      .join('|');
+
+  // Convert destinations to a string
+  String destinationString = destinations
+      .map((destination) => '${destination['latitude']},${destination['longitude']}')
+      .join('|');
+
+  // Construct the URL
+  String url = 'https://www.google.com/maps/dir/?api=1&origin=${origins.first['latitude']},${origins.first['longitude']}&destination=${destinations.last['latitude']},${destinations.last['longitude']}&waypoints=$originString|$destinationString&travelmode=driving&maptype=satellite&t=k&hl=en';
+
+  return url;
+}
+
+
 
 String formatNumber(num number) {
   if (number >= 1000000000) {
@@ -314,6 +372,4 @@ Widget buildBestPerformingProductsChart(List<Map<String, dynamic>> bestPerformin
  
   
 }
-
-
 

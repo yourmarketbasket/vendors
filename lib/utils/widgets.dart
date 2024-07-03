@@ -321,7 +321,7 @@ void openSelectStoreDialog(BuildContext context) async {
 
 // view order details including the map using modal
 
-void showOrderDetailsDialog(BuildContext context, Map<String, dynamic> order) async {
+void showOrderDetailsDialog(BuildContext context, Map<String, dynamic> order, String buyername, String uid, double dw, double dh) async {
   final storesController = Get.put(StoresController());
 
   // Initialize the WebViewController for Windows
@@ -330,7 +330,8 @@ void showOrderDetailsDialog(BuildContext context, Map<String, dynamic> order) as
   webViewController.setBackgroundColor(Color(0x00000000));
   webViewController.setPopupWindowPolicy(WebviewPopupWindowPolicy.deny);
   webViewController.loadUrl(
-      'https://www.google.com/maps/search/?api=1&query=${order['destination']['latitude']},${order['destination']['longitude']}');
+      'https://www.google.com/maps/dir/?api=1&origin=${order['origin']['latitude']},${order['origin']['longitude']}&destination=${order['destination']['latitude']},${order['destination']['longitude']}&travelmode=driving&maptype=satellite&t=k&hl=en'
+);
 
   WidgetsBinding.instance!.addPostFrameCallback((_) {
     showDialog(
@@ -338,6 +339,12 @@ void showOrderDetailsDialog(BuildContext context, Map<String, dynamic> order) as
       barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            Icon(Icons.map),
+            Text("Delivery Directions")
+          ],),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           contentPadding: EdgeInsets.zero,
           content: SingleChildScrollView(
@@ -347,8 +354,9 @@ void showOrderDetailsDialog(BuildContext context, Map<String, dynamic> order) as
                 GetBuilder<StoresController>(
                   builder: (storesController) => Flexible(
                     child: Container(
-                      height: 600,
-                      width: 830,
+                      height: 0.7*dh,
+                      width: 0.5*dw,
+                      padding: EdgeInsets.all(8),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(5),
                         child: Webview(webViewController),
@@ -361,10 +369,9 @@ void showOrderDetailsDialog(BuildContext context, Map<String, dynamic> order) as
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('Buyer Name: ${order['buyername']}'),
-                      Text('Amount: ${order['amount']}'),
+                      Text('Buyer Name: ${buyername}'),
+                      Text('Amount: KES ${formatNumber(order['products']['totalCost'])} /-'),
                       Text('Payment Status: ${order['paymentStatus']}'),
-                      Text('Items: ${order['items']}'),
                       Text('Delivery Fee: ${order['deliveryfee']}'),
                       Text('Country Code: ${order['countryCode']}'),
                       Row(
@@ -983,3 +990,133 @@ Widget _buildMarkerWidget(Offset pos, Color color,
       ),
     );
   }
+
+
+
+Widget showGroupedStoreOrders({
+  required BuildContext context,
+  required List<dynamic> groupedOrders,
+  required double dw,
+  required double dh,
+}) {
+  return Container(
+    width: 0.3 * dw,
+    height: 0.3 * dh,
+    padding: EdgeInsets.only(top:10),
+    decoration: BoxDecoration(
+      color: AppTheme.accentBgColor
+    ),
+    child: Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.history, color: Colors.white),
+            Text("Orders", style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        SizedBox(height: 10),
+        Expanded(
+          child: ListView.builder(
+            itemCount: groupedOrders.length,
+            itemBuilder: (BuildContext context, int index) {
+              dynamic orderGroup = groupedOrders[index];              
+              return ExpansionTile(
+                iconColor: Colors.white,
+                collapsedIconColor: Colors.white,
+                title: Text(
+                  '${orderGroup['buyername']} - ${orderGroup['totalOrders']} item(s) - KES ${formatNumber(orderGroup['totalAmount'])}/-',
+                  style: TextStyle(color: Colors.white),
+                ),
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        color: Colors.white,
+                        onPressed: (){
+                          showOrderDeliveryMapDialog(context, generateGoogleMapsUrl(orderGroup['origins'], orderGroup['destination']));
+                        }, 
+                        icon: Icon(Icons.route)
+                      ),
+                      ElevatedButton(
+                        onPressed: (){},
+                        child: Text("Dispatch")
+                      ),
+                      Text("Status: PENDING", style: TextStyle(color:Colors.white)),
+                    ],
+                  ),
+                  Container(
+                    height: 0.06 * orderGroup['totalOrders'] * dh,
+                    width: 0.3 * dw,
+                    decoration: BoxDecoration(
+                      color: AppTheme.accentBgColor,
+                    ),
+                    child: SingleChildScrollView(
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: orderGroup['orders'].length,
+                        itemBuilder: (BuildContext context, int innerIndex) {
+                          dynamic order = orderGroup['orders'][innerIndex];
+                          return ListTile(
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(order['products']['productname'] ?? '', style: TextStyle(color: Colors.white, fontSize: 12)),
+                                order['paymentStatus'] == "Completed" ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text("${order['paymentStatus'] ?? ''}", style: TextStyle(color: order['paymentStatus'] == "Completed" ? Colors.green : Colors.red, fontSize: 10)),
+                                    if (order['paymentStatus'] == "Completed") Text("TID: ${order['transactionID']}", style: TextStyle(color: Colors.white, fontSize: 10)),
+                                    Row(
+                                      children: [
+                                        Text("TC: ${formatNumber(order['products']['totalCost'])}", style: TextStyle(color: Colors.white, fontSize: 10)),
+                                        SizedBox(width: 10,),
+                                        Text("TQ: ${formatNumber(order['products']['quantity'])}", style: TextStyle(color: Colors.white, fontSize: 10)),
+                                      ],
+                                    )
+                                  ],
+                                ): Container(),
+                              ],
+                            ),
+                            onTap: () {
+                                showOrderDetailsDialog(context, order,orderGroup['buyername'],orderGroup['_id'], dw, dh);
+
+                              // show order details
+                            },
+                            trailing: order['paymentStatus'] == "Completed"
+                              ? GestureDetector(
+                                  onTap: () {
+                                    showOrderDetailsDialog(context, order,orderGroup['buyername'],orderGroup['_id'], dw, dh);
+                                  },
+                                  child: Container(
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(color: Colors.white),
+                                    ),
+                                    padding: EdgeInsets.all(5),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.settings, color: Colors.white),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              : Text('Pending', style: TextStyle(fontSize: 10),),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    ),
+  );
+}
