@@ -77,7 +77,7 @@ void showOrderDeliveryMapDialog(BuildContext context, String mapUrl) async {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Comprehensive Delivery Route Route")
+            Text("Comprehensive Delivery Route")
           ],
         ),
         contentPadding: EdgeInsets.zero,

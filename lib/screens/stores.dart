@@ -324,9 +324,6 @@ class _StoresScreenState extends State<StoresScreen> {
                                           ),
                                         ),
                                       )
-
-
-
                               );
                             },
                           ),
